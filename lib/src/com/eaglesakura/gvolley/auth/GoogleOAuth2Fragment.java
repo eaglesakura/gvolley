@@ -5,11 +5,11 @@ import java.io.File;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -388,6 +388,17 @@ public class GoogleOAuth2Fragment extends Fragment {
         public void onAuthCanceled(GoogleOAuth2Fragment fragment);
     }
 
+    public static Bundle newArgments(final String clientId, final String clientSecret, final String[] scopes) {
+
+        Bundle bundle = new Bundle();
+
+        bundle.putString(ARG_CLIENT_ID, clientId);
+        bundle.putString(ARG_CLIENT_SECRET, clientSecret);
+        bundle.putString(ARG_REDIRECT_URI, ARG_DEFAULT_REDIRECT_URI);
+        bundle.putStringArray(ARG_SCOPE_URLs, scopes);
+        return bundle;
+    }
+
     /**
      * 
      * @param clientId
@@ -397,15 +408,8 @@ public class GoogleOAuth2Fragment extends Fragment {
      */
     public static GoogleOAuth2Fragment newFragment(final String clientId, final String clientSecret,
             final String[] scopes) {
-        Bundle bundle = new Bundle();
-
-        bundle.putString(ARG_CLIENT_ID, clientId);
-        bundle.putString(ARG_CLIENT_SECRET, clientSecret);
-        bundle.putString(ARG_REDIRECT_URI, ARG_DEFAULT_REDIRECT_URI);
-        bundle.putStringArray(ARG_SCOPE_URLs, scopes);
-
         GoogleOAuth2Fragment fragment = new GoogleOAuth2Fragment();
-        fragment.setArguments(bundle);
+        fragment.setArguments(newArgments(clientId, clientSecret, scopes));
         return fragment;
     }
 }
