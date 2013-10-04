@@ -14,7 +14,7 @@ import com.eaglesakura.lib.net.WebAPIException;
 import com.googlecode.androidannotations.annotations.EActivity;
 import com.googlecode.androidannotations.annotations.Extra;
 
-@EActivity(R.layout.activity_auth)
+@EActivity
 public class GoogleAuthActivity extends Activity implements GoogleOAuth2Fragment.OAuth2Listener {
 
     /**
@@ -43,6 +43,7 @@ public class GoogleAuthActivity extends Activity implements GoogleOAuth2Fragment
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setContentView(R.layout.activity_auth);
         super.onCreate(savedInstanceState);
 
         // 引数を設定する

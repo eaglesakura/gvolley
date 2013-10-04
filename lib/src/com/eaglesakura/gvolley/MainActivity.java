@@ -10,11 +10,12 @@ import com.eaglesakura.gvolley.auth.Scopes;
 import com.googlecode.androidannotations.annotations.EActivity;
 import com.googlecode.androidannotations.annotations.UiThread;
 
-@EActivity(R.layout.activity_main)
+@EActivity
 public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setContentView(R.layout.activity_main);
         super.onCreate(savedInstanceState);
 
         Intent intent = GoogleAuthActivity.newIntent(this, GoogleAuthActivity.class,

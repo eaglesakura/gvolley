@@ -21,16 +21,6 @@ import com.eaglesakura.lib.net.WebAPIException;
 public class GoogleOAuth2Helper {
     private static final String ENDPOINT = "https://accounts.google.com/o/oauth2";
 
-    /**
-     * GoogleDriveへのアクセス
-     */
-    public static final String SCOPE_GDRIVE = "https://www.googleapis.com/auth/drive";
-
-    /**
-     * email情報へのアクセス
-     */
-    public static final String SCOPE_USERINFO_EMAIL = "https://www.googleapis.com/auth/userinfo.email";
-
     static final int TIMEOUT_MS = 1000 * 15;
 
     /**
