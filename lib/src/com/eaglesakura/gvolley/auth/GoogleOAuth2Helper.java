@@ -3,9 +3,14 @@ package com.eaglesakura.gvolley.auth;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import com.eaglesakura.gvolley.json.JSON;
 import com.eaglesakura.gvolley.json.Model;
@@ -24,43 +29,62 @@ public class GoogleOAuth2Helper {
     static final int TIMEOUT_MS = 1000 * 15;
 
     /**
+     * クエリ用URLを生成する
+     * @param url
+     * @param queries
+     * @return
+     */
+    public static String makeQueryUrl(String url, Map<String, String> queries) {
+        try {
+            if (!queries.isEmpty()) {
+                StringBuilder sb = new StringBuilder(url);
+                sb.append("?");
+
+                Iterator<Entry<String, String>> iterator = queries.entrySet().iterator();
+                // URLにクエリを追加する
+                while (iterator.hasNext()) {
+                    Entry<String, String> entry = iterator.next();
+                    sb.append(entry.getKey()).append('=').append(URLEncoder.encode(entry.getValue(), "utf-8"));
+                    if (iterator.hasNext()) {
+                        sb.append('&');
+                    }
+                }
+                return sb.toString();
+            } else {
+                return url;
+            }
+        } catch (UnsupportedEncodingException e) {
+            return url;
+        }
+    }
+
+    /**
      * 認証コードを取得する
      * 各コードは"https://code.google.com/apis/console"から作成
      * @throws GDataException
      */
-    public static String getAuthorizationUrl(final String clientId, final String redirectUri, final String[] scopeUrls)
-            throws WebAPIException {
-        try {
-            String SCOPES = "";
-            {
-                for (int i = 0; i < scopeUrls.length; ++i) {
-                    SCOPES += scopeUrls[i];
-                    if (i < (scopeUrls.length - 1)) {
-                        SCOPES += " ";
-                    }
+    public static String getAuthorizationUrl(final String clientId, final String redirectUri, final String[] scopeUrls) {
+        String SCOPES = "";
+        {
+            for (int i = 0; i < scopeUrls.length; ++i) {
+                SCOPES += scopeUrls[i];
+                if (i < (scopeUrls.length - 1)) {
+                    SCOPES += " ";
                 }
             }
-
-            // パラメータを組み立てる
-            StringBuilder b = new StringBuilder();
-            b.append("response_type=code");
-            b.append("&client_id=").append(URLEncoder.encode(clientId, "utf-8"));
-            b.append("&redirect_uri=").append(URLEncoder.encode(redirectUri, "utf-8"));
-            b.append("&scope=").append(URLEncoder.encode(SCOPES, "utf-8"));
-            b.append("&status=1&access_type=offline&approval_prompt=force");
-
-            HttpURLConnection.setFollowRedirects(false);
-            // GET メソッドでリクエストする
-            HttpURLConnection c = (HttpURLConnection) new URL(ENDPOINT + "/auth?" + b.toString()).openConnection();
-            c.setConnectTimeout(1000 * 10);
-            final String resultURL = c.getHeaderField("Location");
-            c.disconnect();
-
-            return resultURL;
-
-        } catch (IOException e) {
-            throw new WebAPIException(e);
         }
+
+        // パラメータの組み立て
+        Map<String, String> queries = new HashMap<String, String>();
+        queries.put("response_type", "code");
+        queries.put("client_id", clientId);
+        queries.put("redirect_uri", redirectUri);
+        queries.put("scope", SCOPES);
+        queries.put("status", "1");
+        queries.put("access_type", "offline");
+        queries.put("approval_prompt", "force");
+
+        return makeQueryUrl(ENDPOINT + "/auth", queries);
     }
 
     /**

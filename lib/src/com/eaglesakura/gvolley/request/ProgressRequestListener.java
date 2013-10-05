@@ -22,7 +22,7 @@ public abstract class ProgressRequestListener<T> extends RequestListener<T> impl
     /**
      * 進捗中のリクエスト
      */
-    SimpleModelRequest<T> request;
+    BaseRequest<T> request;
 
     /**
      * 
@@ -48,9 +48,17 @@ public abstract class ProgressRequestListener<T> extends RequestListener<T> impl
      * リクエストを設定する
      * @param req
      */
-    public ProgressRequestListener<T> setRequest(SimpleModelRequest<T> req) {
+    public ProgressRequestListener<T> setRequest(BaseRequest<T> req) {
         this.request = req;
         return this;
+    }
+
+    /**
+     * 設定されているリクエストを得る
+     * @return
+     */
+    public BaseRequest<T> getRequest() {
+        return request;
     }
 
     /**

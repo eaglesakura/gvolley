@@ -20,6 +20,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.webkit.WebViewDatabase;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 import com.eaglesakura.gvolley.auth.GoogleOAuth2Helper.AuthToken;
 import com.eaglesakura.lib.android.game.thread.AsyncAction;
 import com.eaglesakura.lib.android.game.thread.UIHandler;
@@ -29,6 +31,7 @@ import com.eaglesakura.lib.net.WebAPIException;
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.Background;
 import com.googlecode.androidannotations.annotations.EFragment;
+import com.googlecode.androidannotations.annotations.FragmentArg;
 import com.googlecode.androidannotations.annotations.UiThread;
 
 /**
@@ -66,7 +69,21 @@ public class GoogleOAuth2Fragment extends Fragment {
      */
     static final String ARG_DEFAULT_REDIRECT_URI = "http://localhost";
 
+    @FragmentArg(ARG_CLIENT_ID)
+    String clientId;
+
+    @FragmentArg(ARG_CLIENT_SECRET)
+    String clientSecret;
+
+    @FragmentArg(ARG_REDIRECT_URI)
+    String redirectUri;
+
+    @FragmentArg(ARG_SCOPE_URLs)
+    String[] scopes;
+
     OAuth2Listener listener;
+
+    RequestQueue requests;
 
     @Override
     @SuppressWarnings("all")
@@ -90,6 +107,51 @@ public class GoogleOAuth2Fragment extends Fragment {
         webView.clearHistory();
         webView.clearMatches();
         webView.clearView();
+        webView.setWebViewClient(new WebViewClient() {
+            boolean checked = false;
+
+            synchronized boolean checkURL(final String checkUrl) {
+                if (checked) {
+                    return false;
+                }
+
+                if (checkUrl.startsWith(redirectUri)) {
+                    // 正常にリダイレクトが動いた場合 
+                    int index = checkUrl.indexOf('=');
+                    final String authCode = checkUrl.substring(index + 1);
+                    LogUtil.log("debug::" + authCode);
+                    //
+                    LogUtil.log("auth code / complete");
+                    UIHandler.postUI(new Runnable() {
+                        @Override
+                        public void run() {
+                            // WebViewを不可視にする
+                            webView.setVisibility(View.INVISIBLE);
+                            onReceiveAuthCode(authCode);
+                        }
+                    });
+                    checked = true;
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public void onPageStarted(WebView view, String startUrl, Bitmap favicon) {
+                super.onPageStarted(view, startUrl, favicon);
+
+                checkURL(startUrl);
+            }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String startUrl) {
+                if (checkURL(startUrl)) {
+                    return true;
+                }
+
+                return super.shouldOverrideUrlLoading(view, startUrl);
+            }
+        });
         loadAuthURL();
     }
 
@@ -132,6 +194,18 @@ public class GoogleOAuth2Fragment extends Fragment {
         super.onAttach(activity);
 
         listener = (OAuth2Listener) activity;
+        if (requests == null) {
+            requests = Volley.newRequestQueue(activity);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        if (requests != null) {
+            requests.stop();
+            requests = null;
+        }
+        super.onDestroy();
     }
 
     /**
@@ -221,83 +295,10 @@ public class GoogleOAuth2Fragment extends Fragment {
 
             @Override
             protected Object onBackgroundAction() throws Exception {
-                AuthToken token = GoogleOAuth2Helper.getAuthToken(getClientId(), getClientSecret(), getRedirectURL(),
-                        authCode);
+                AuthToken token = GoogleOAuth2Helper.getAuthToken(clientId, clientSecret, redirectUri, authCode);
                 return token;
             }
         }).start();
-    }
-
-    /**
-     * 認証用のURLを取得した
-     * @param url
-     */
-    protected void onReceiveAuthorizationUrl(final String url) {
-        if (!isExist()) {
-            return;
-        }
-        webView.loadUrl(url);
-        webView.setWebViewClient(new WebViewClient() {
-            boolean checked = false;
-
-            synchronized boolean checkURL(final String checkUrl) {
-                if (checked) {
-                    return false;
-                }
-
-                if (checkUrl.startsWith(getRedirectURL())) {
-                    // 正常にリダイレクトが動いた場合 
-                    int index = checkUrl.indexOf('=');
-                    final String authCode = checkUrl.substring(index + 1);
-                    LogUtil.log("debug::" + authCode);
-                    //
-                    LogUtil.log("auth code / complete");
-                    UIHandler.postUI(new Runnable() {
-                        @Override
-                        public void run() {
-                            // WebViewを不可視にする
-                            webView.setVisibility(View.INVISIBLE);
-                            onReceiveAuthCode(authCode);
-                        }
-                    });
-                    checked = true;
-                    return true;
-                }
-                return false;
-            }
-
-            @Override
-            public void onPageStarted(WebView view, String startUrl, Bitmap favicon) {
-                super.onPageStarted(view, url, favicon);
-
-                checkURL(startUrl);
-            }
-
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String startUrl) {
-                if (checkURL(startUrl)) {
-                    return true;
-                }
-
-                return super.shouldOverrideUrlLoading(view, startUrl);
-            }
-        });
-    }
-
-    public String getClientId() {
-        return getArguments().getString(ARG_CLIENT_ID);
-    }
-
-    public String getClientSecret() {
-        return getArguments().getString(ARG_CLIENT_SECRET);
-    }
-
-    public String getRedirectURL() {
-        return getArguments().getString(ARG_REDIRECT_URI);
-    }
-
-    public String[] getScopeUrls() {
-        return getArguments().getStringArray(ARG_SCOPE_URLs);
     }
 
     private GoogleOAuth2Fragment get_this() {
@@ -309,56 +310,8 @@ public class GoogleOAuth2Fragment extends Fragment {
      */
     @UiThread
     protected void startAuthorization() {
-        final Dialog dialog = createAuthUrlLoadingDialog();
-        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                listener.onAuthCanceled(get_this());
-            }
-        });
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.show();
-        (new AsyncAction() {
-            String authUrl = null;
-
-            @Override
-            protected void onSuccess(Object object) {
-                if (!isExist()) {
-                    return;
-                }
-
-                onReceiveAuthorizationUrl(authUrl);
-            }
-
-            @Override
-            protected void onFailure(Exception exception) {
-                LogUtil.log(exception);
-                if (!(exception instanceof WebAPIException)) {
-                    exception = new WebAPIException(exception);
-                }
-                listener.onErrorMakeAuthURL(get_this(), (WebAPIException) exception);
-            }
-
-            @Override
-            protected void onFinalize() {
-                super.onFinalize();
-
-                if (isExist()) {
-                    if (dialog.isShowing()) {
-                        dialog.dismiss();
-                    }
-                }
-            }
-
-            @Override
-            protected Object onBackgroundAction() throws Exception {
-                authUrl = GoogleOAuth2Helper.getAuthorizationUrl(getClientId(), getRedirectURL(), getScopeUrls());
-                if (authUrl == null) {
-                    throw new NullPointerException("Auth URL is null");
-                }
-                return authUrl;
-            }
-        }).start();
+        // 認証URLを開く
+        webView.loadUrl(GoogleOAuth2Helper.getAuthorizationUrl(clientId, redirectUri, scopes));
     }
 
     /**
