@@ -27,14 +27,29 @@ public class OAuthProvider {
      */
     String refresh;
 
+    /**
+     * データベースの実ファイル
+     */
     final File dbFile;
 
+    /**
+     * テーブルの管理ID
+     */
     final String uniqueId;
 
+    /**
+     * 
+     */
     final Context context;
 
+    /**
+     * OAuth2 クライアントID
+     */
     final String clientId;
 
+    /**
+     * OAuth2 クライアントシークレット
+     */
     final String clientSecret;
 
     private static final String TABLE_NAME = "tokens";

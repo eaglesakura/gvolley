@@ -1,26 +1,22 @@
 package com.eaglesakura.gvolley;
 
-import java.util.List;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.widget.Toast;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.eaglesakura.gvolley.auth.GoogleAuthActivity;
 import com.eaglesakura.gvolley.auth.OAuthProvider;
 import com.eaglesakura.gvolley.auth.Scopes;
-import com.eaglesakura.gvolley.request.BaseXmlRequest;
+import com.eaglesakura.gvolley.gdata.spreadsheet.SpreadsheetDocumentList;
+import com.eaglesakura.gvolley.gdata.spreadsheet.SpreadsheetEntry;
+import com.eaglesakura.gvolley.gdata.spreadsheet.SpreadsheetProvider;
 import com.eaglesakura.gvolley.request.listener.AurhorizedProgressRequestController;
-import com.eaglesakura.gvolley.spreadsheet.SpreadsheetDocumentList;
-import com.eaglesakura.gvolley.spreadsheet.SpreadsheetEntry;
 import com.eaglesakura.lib.android.game.util.LogUtil;
-import com.eaglesakura.lib.io.XmlElement;
 import com.googlecode.androidannotations.annotations.EActivity;
 import com.googlecode.androidannotations.annotations.UiThread;
 
@@ -30,6 +26,8 @@ public class MainActivity extends Activity {
     private OAuthProvider provider;
 
     RequestQueue queue = null;
+
+    SpreadsheetProvider spreadsheet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +39,7 @@ public class MainActivity extends Activity {
 
         if (provider.isAuthorized()) {
             toast("authorized");
+            spreadsheet = new SpreadsheetProvider(provider);
             loadSpreadsheets();
         } else {
             startAuth();
@@ -67,7 +66,6 @@ public class MainActivity extends Activity {
      */
     @UiThread
     void loadSpreadsheets() {
-        String url = "https://spreadsheets.google.com/feeds/spreadsheets/private/full";
         AurhorizedProgressRequestController<SpreadsheetDocumentList> dialog = new AurhorizedProgressRequestController<SpreadsheetDocumentList>(
                 this, queue, provider) {
 
@@ -77,26 +75,17 @@ public class MainActivity extends Activity {
                 LogUtil.log("updated :: " + documents.getUpdated().toString());
 
                 // シート一覧を取得する
-                List<SpreadsheetEntry> files = documents.getFiles();
-                for (SpreadsheetEntry entry : files) {
-                    LogUtil.log("title :: " + entry.getTitle());
-                    LogUtil.log("id :: " + entry.getId());
-                    LogUtil.log("worksheet :: " + entry.getWorksheetsUrl());
-                }
+                SpreadsheetEntry entry = documents.getFiles().get(0);
+                LogUtil.log("title :: " + entry.getTitle());
+                LogUtil.log("id :: " + entry.getId());
+                LogUtil.log("worksheet :: " + entry.getWorksheetsUrl());
             }
 
             @Override
             protected void onVolleyError(VolleyError error) {
             }
         };
-        BaseXmlRequest<SpreadsheetDocumentList> req = new BaseXmlRequest<SpreadsheetDocumentList>(Request.Method.GET,
-                url, dialog) {
-            @Override
-            public SpreadsheetDocumentList convert(XmlElement response) {
-                return new SpreadsheetDocumentList(response);
-            }
-        };
-        dialog.show().addRequestQueue(req);
+        dialog.show().addRequestQueue(spreadsheet.listDocuments(dialog));
     }
 
     @UiThread

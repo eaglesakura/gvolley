@@ -1,4 +1,4 @@
-package com.eaglesakura.gvolley.spreadsheet;
+package com.eaglesakura.gvolley.gdata.spreadsheet;
 
 import java.util.ArrayList;
 import java.util.List;
