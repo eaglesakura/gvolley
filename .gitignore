@@ -9,3 +9,4 @@ local.properties
 *.o.d
 debugjar
 factory/
+assets/sample.xml

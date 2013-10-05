@@ -4,24 +4,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.eaglesakura.gvolley.VolleyUtil;
-import com.eaglesakura.gvolley.json.Model;
+import com.eaglesakura.gvolley.gdata.BaseGDataObject;
 import com.eaglesakura.lib.io.XmlElement;
 
 /**
  * Spreadsheetのファイル一覧
  */
-public class SpreadsheetDocumentList extends Model {
-
-    /**
-     * ID
-     */
-    String id;
-
-    /**
-     * updated
-     */
-    Date updated;
+public class SpreadsheetDocumentList extends BaseGDataObject {
 
     /**
      * 
@@ -29,8 +18,7 @@ public class SpreadsheetDocumentList extends Model {
     List<SpreadsheetEntry> files = new ArrayList<SpreadsheetEntry>();
 
     public SpreadsheetDocumentList(XmlElement root) {
-        this.id = root.childToString("id");
-        this.updated = VolleyUtil.toDate(root.childToString("updated"));
+        super(root);
         initializeEntries(root);
 
     }

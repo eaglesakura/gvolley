@@ -46,6 +46,7 @@ public abstract class AuthorizedRequestController<T> extends RequestListener<T> 
      * @param req
      */
     public void addRequestQueue(BaseRequest<T> req) {
+        this.request = req;
         provider.authorize(req, null);
         this.queue.add(req);
         this.queue.start();
@@ -53,7 +54,7 @@ public abstract class AuthorizedRequestController<T> extends RequestListener<T> 
 
     @Override
     protected final void onError(VolleyError error) {
-        if (error.networkResponse.statusCode == 401) {
+        if (error != null && error.networkResponse != null && error.networkResponse.statusCode == 401) {
             onAuthorizationError(error);
         } else {
             onVolleyError(error);

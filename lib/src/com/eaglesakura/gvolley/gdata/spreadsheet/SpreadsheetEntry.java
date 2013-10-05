@@ -5,29 +5,24 @@ import java.util.List;
 
 import com.eaglesakura.gvolley.auth.Scopes;
 import com.eaglesakura.gvolley.gdata.Author;
-import com.eaglesakura.gvolley.json.Model;
+import com.eaglesakura.gvolley.gdata.BaseGDataObject;
 import com.eaglesakura.lib.io.XmlElement;
 
 /**
  * Spreadsheetの1ファイルの概要を扱う
  */
-public class SpreadsheetEntry extends Model {
-
-    String id;
-
-    String title;
+public class SpreadsheetEntry extends BaseGDataObject {
 
     /**
      * ファイルを示す一意のID
      */
-    String fileId;
+    String key;
 
     List<Author> author = new ArrayList<Author>();
 
     public SpreadsheetEntry(XmlElement elenent) {
-        id = elenent.childToString("id");
-        title = elenent.childToString("title");
-        fileId = id.substring(id.lastIndexOf('/') + 1);
+        super(elenent);
+        key = id.substring(id.lastIndexOf('/') + 1);
 
         // 編集者リストを設定する
         {
@@ -39,12 +34,12 @@ public class SpreadsheetEntry extends Model {
         }
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public String getId() {
-        return id;
+    /**
+     * ワークシート等へアクセスするためのファイルごとの一意のキー
+     * @return
+     */
+    public String getKey() {
+        return key;
     }
 
     /**
@@ -52,7 +47,7 @@ public class SpreadsheetEntry extends Model {
      * @return
      */
     public String getWorksheetsUrl() {
-        return Scopes.SPREADSHEET.getEndpoint() + "worksheets/" + fileId + "/private/full";
+        return Scopes.SPREADSHEET.getEndpoint() + "worksheets/" + key + "/private/full";
     }
 
     /**
