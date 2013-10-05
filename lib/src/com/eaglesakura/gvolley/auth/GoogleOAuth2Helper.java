@@ -3,16 +3,14 @@ package com.eaglesakura.gvolley.auth;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import com.android.volley.Request;
+import com.eaglesakura.gvolley.VolleyUtil;
 import com.eaglesakura.gvolley.json.JSON;
 import com.eaglesakura.gvolley.json.Model;
 import com.eaglesakura.gvolley.request.RequestListener;
@@ -29,37 +27,7 @@ import com.eaglesakura.lib.net.WebAPIException;
 public class GoogleOAuth2Helper {
     private static final String ENDPOINT = "https://accounts.google.com/o/oauth2";
 
-    static final int TIMEOUT_MS = 1000 * 15;
-
-    /**
-     * クエリ用URLを生成する
-     * @param url
-     * @param queries
-     * @return
-     */
-    public static String makeQueryUrl(String url, Map<String, String> queries) {
-        try {
-            if (!queries.isEmpty()) {
-                StringBuilder sb = new StringBuilder(url);
-                sb.append("?");
-
-                Iterator<Entry<String, String>> iterator = queries.entrySet().iterator();
-                // URLにクエリを追加する
-                while (iterator.hasNext()) {
-                    Entry<String, String> entry = iterator.next();
-                    sb.append(entry.getKey()).append('=').append(URLEncoder.encode(entry.getValue(), "utf-8"));
-                    if (iterator.hasNext()) {
-                        sb.append('&');
-                    }
-                }
-                return sb.toString();
-            } else {
-                return url;
-            }
-        } catch (UnsupportedEncodingException e) {
-            return url;
-        }
-    }
+    private static final int TIMEOUT_MS = 1000 * 15;
 
     /**
      * 認証コードを取得する
@@ -87,7 +55,7 @@ public class GoogleOAuth2Helper {
         queries.put("access_type", "offline");
         queries.put("approval_prompt", "force");
 
-        return makeQueryUrl(ENDPOINT + "/auth", queries);
+        return VolleyUtil.makeQueryUrl(ENDPOINT + "/auth", queries);
     }
 
     /**
@@ -125,7 +93,7 @@ public class GoogleOAuth2Helper {
                 AuthToken.class, listener);
         req.putForm("client_id", clientId);
         req.putForm("client_secret", clientSecret);
-        req.putForm("grant_type", "authorization_code");
+        req.putForm("grant_type", "refresh_token");
         req.putForm("refresh_token", refreshTocken);
         return req;
     }

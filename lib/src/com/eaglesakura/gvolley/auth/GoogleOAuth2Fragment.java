@@ -159,11 +159,17 @@ public class GoogleOAuth2Fragment extends Fragment {
      */
     @Background
     void loadAuthURL() {
-        File cacheDirectory = new File(getActivity().getFilesDir(), "__es_auth_cache__");
+        final File cacheDirectory = new File(getActivity().getFilesDir(), "__es_auth_cache__");
 
         FileUtil.mkdir(cacheDirectory);
         FileUtil.cleanDirectory(cacheDirectory);
-        webView.getSettings().setAppCachePath(cacheDirectory.getAbsolutePath());
+        UIHandler.postUI(new Runnable() {
+
+            @Override
+            public void run() {
+                webView.getSettings().setAppCachePath(cacheDirectory.getAbsolutePath());
+            }
+        });
         CookieSyncManager.createInstance(getActivity());
         CookieManager.getInstance().removeAllCookie();
 

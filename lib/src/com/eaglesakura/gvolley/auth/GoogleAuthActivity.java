@@ -1,10 +1,13 @@
 package com.eaglesakura.gvolley.auth;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.eaglesakura.aautil.EUtil;
@@ -32,6 +35,11 @@ public class GoogleAuthActivity extends Activity implements GoogleOAuth2Fragment
      */
     static final String EXTRA_SCOPES = "EXTRA_SCOPES";
 
+    /**
+     * AuthProvider ID
+     */
+    static final String EXTRA_PROVIDER_ID = "EXTRA_PROVIDER_ID";
+
     @Extra(EXTRA_CLIENT_ID)
     String clientId;
 
@@ -41,9 +49,18 @@ public class GoogleAuthActivity extends Activity implements GoogleOAuth2Fragment
     @Extra(EXTRA_SCOPES)
     String[] scopes;
 
+    @Extra(EXTRA_PROVIDER_ID)
+    String providerId;
+
+    /**
+     * oauth情報保持クラス
+     */
+    AuthProvider provider;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_auth);
+        provider = new AuthProvider(this, providerId);
         super.onCreate(savedInstanceState);
 
         // 引数を設定する
@@ -60,17 +77,29 @@ public class GoogleAuthActivity extends Activity implements GoogleOAuth2Fragment
 
     @Override
     public void onAuthCanceled(GoogleOAuth2Fragment fragment) {
-
+        finish();
     }
 
     @Override
     public void onErrorMakeAuthToken(GoogleOAuth2Fragment fragment, VolleyError e) {
         LogUtil.log("onErrorMakeAuthToken :: " + e.getMessage());
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.network_failed);
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+        builder.show();
     }
 
     @Override
     public void onMakeTokenComplete(GoogleOAuth2Fragment fragment, AuthToken token) {
         LogUtil.log("onMakeTokenComplete :: " + token.access_token + "/" + token.refresh_token);
+        provider.onAuthCompleted(token);
+        Toast.makeText(this, R.string.auth_complete, Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     /**
@@ -82,11 +111,12 @@ public class GoogleAuthActivity extends Activity implements GoogleOAuth2Fragment
      * @return
      */
     public static Intent newIntent(Context context, Class<? extends GoogleAuthActivity> clazz, String clientId,
-            String clientSecret, String[] scopes) {
+            String clientSecret, String[] scopes, AuthProvider provider) {
         Intent intent = new Intent(context, EUtil.annotation(clazz));
         intent.putExtra(EXTRA_CLIENT_ID, clientId);
         intent.putExtra(EXTRA_CLIENT_SECRET, clientSecret);
         intent.putExtra(EXTRA_SCOPES, scopes);
+        intent.putExtra(EXTRA_PROVIDER_ID, provider.getUniqueId());
 
         return intent;
     }
