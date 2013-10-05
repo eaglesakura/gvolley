@@ -91,5 +91,6 @@ public abstract class ProgressRequestListener<T> extends RequestListener<T> impl
 
     @Override
     public void onCancel(DialogInterface dialog) {
+        request.cancel();
     }
 }

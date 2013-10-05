@@ -37,7 +37,7 @@ public class AuthProvider {
     /**
      * OAuth認証用のキーを保持する
      * @param context
-     * @param uniqueId ストア内で一意に識別するためのID。文字列ならなんでもいい。
+     * @param uniqueId ストア内で一意に識別するためのID。英数で指定
      * @param dbFile
      */
     public AuthProvider(Context context, String uniqueId) {

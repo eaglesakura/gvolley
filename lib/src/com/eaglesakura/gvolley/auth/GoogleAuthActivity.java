@@ -82,7 +82,7 @@ public class GoogleAuthActivity extends Activity implements GoogleOAuth2Fragment
 
     @Override
     public void onErrorMakeAuthToken(GoogleOAuth2Fragment fragment, VolleyError e) {
-        LogUtil.log("onErrorMakeAuthToken :: " + e.getMessage());
+        LogUtil.log("onErrorMakeAuthToken");
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.network_failed);
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -96,7 +96,7 @@ public class GoogleAuthActivity extends Activity implements GoogleOAuth2Fragment
 
     @Override
     public void onMakeTokenComplete(GoogleOAuth2Fragment fragment, AuthToken token) {
-        LogUtil.log("onMakeTokenComplete :: " + token.access_token + "/" + token.refresh_token);
+        //        LogUtil.log("onMakeTokenComplete :: " + token.access_token + "/" + token.refresh_token);
         provider.onAuthCompleted(token);
         Toast.makeText(this, R.string.auth_complete, Toast.LENGTH_SHORT).show();
         finish();

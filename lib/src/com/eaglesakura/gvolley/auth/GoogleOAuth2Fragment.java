@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -272,6 +273,12 @@ public class GoogleOAuth2Fragment extends Fragment {
             @Override
             protected void onError(VolleyError error) {
                 listener.onErrorMakeAuthToken(get_this(), error);
+            }
+
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                super.onCancel(dialog);
+                listener.onAuthCanceled(get_this());
             }
         };
         tokenListener.addRequestQueue(
