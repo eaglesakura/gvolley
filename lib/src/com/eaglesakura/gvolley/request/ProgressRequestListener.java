@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 
+import com.android.volley.RequestQueue;
 import com.eaglesakura.gvolley.R;
 import com.eaglesakura.lib.android.game.thread.UIHandler;
 
@@ -24,16 +25,19 @@ public abstract class ProgressRequestListener<T> extends RequestListener<T> impl
      */
     BaseRequest<T> request;
 
+    final RequestQueue queue;
+
     /**
      * 
      */
-    public ProgressRequestListener(Context context) {
+    public ProgressRequestListener(Context context, RequestQueue queue) {
         dialog = new ProgressDialog(context);
         dialog.setMessage(context.getString(R.string.network_connecting));
         dialog.setOnCancelListener(this);
 
         // 外部タッチは無効にする
         dialog.setCanceledOnTouchOutside(false);
+        this.queue = queue;
     }
 
     /**
@@ -45,11 +49,13 @@ public abstract class ProgressRequestListener<T> extends RequestListener<T> impl
     }
 
     /**
-     * リクエストを設定する
+     * リクエストを設定し、キューへ追加する
      * @param req
      */
-    public ProgressRequestListener<T> setRequest(BaseRequest<T> req) {
+    public ProgressRequestListener<T> addRequestQueue(BaseRequest<T> req) {
         this.request = req;
+        queue.add(req);
+        queue.start();
         return this;
     }
 

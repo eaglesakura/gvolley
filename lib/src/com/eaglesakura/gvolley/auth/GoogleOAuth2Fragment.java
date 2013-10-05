@@ -256,7 +256,8 @@ public class GoogleOAuth2Fragment extends Fragment {
             return;
         }
 
-        ProgressRequestListener<AuthToken> tokenListener = new ProgressRequestListener<AuthToken>(getActivity()) {
+        ProgressRequestListener<AuthToken> tokenListener = new ProgressRequestListener<AuthToken>(getActivity(),
+                requests) {
             @Override
             protected void onSuccess(AuthToken response) {
                 listener.onMakeTokenComplete(get_this(), response);
@@ -267,53 +268,8 @@ public class GoogleOAuth2Fragment extends Fragment {
                 listener.onErrorMakeAuthToken(get_this(), error);
             }
         };
-        tokenListener.setRequest(
+        tokenListener.addRequestQueue(
                 GoogleOAuth2Helper.getAuthToken(clientId, clientSecret, redirectUri, authCode, tokenListener)).show();
-        requests.add(tokenListener.getRequest());
-        requests.start();
-        //        final Dialog dialog = createAccesTokenLoadingDialog();
-        //        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-        //            @Override
-        //            public void onCancel(DialogInterface dialog) {
-        //                listener.onAuthCanceled(get_this());
-        //            }
-        //        });
-        //        dialog.setCanceledOnTouchOutside(false);
-        //        dialog.show();
-        //        (new AsyncAction() {
-        //
-        //            @Override
-        //            protected void onSuccess(Object object) {
-        //                if (!isExist()) {
-        //                    return;
-        //                }
-        //
-        //                AuthToken token = (AuthToken) object;
-        //                listener.onMakeTokenComplete(get_this(), token);
-        //            }
-        //
-        //            @Override
-        //            protected void onFailure(Exception exception) {
-        //                listener.onErrorMakeAuthToken(get_this(), (WebAPIException) exception);
-        //            }
-        //
-        //            @Override
-        //            protected void onFinalize() {
-        //                super.onFinalize();
-        //
-        //                if (isExist()) {
-        //                    if (dialog.isShowing()) {
-        //                        dialog.dismiss();
-        //                    }
-        //                }
-        //            }
-        //
-        //            @Override
-        //            protected Object onBackgroundAction() throws Exception {
-        //                AuthToken token = GoogleOAuth2Helper.getAuthToken(clientId, clientSecret, redirectUri, authCode);
-        //                return token;
-        //            }
-        //        }).start();
     }
 
     private GoogleOAuth2Fragment get_this() {

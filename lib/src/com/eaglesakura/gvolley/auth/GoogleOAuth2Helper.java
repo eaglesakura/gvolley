@@ -111,66 +111,23 @@ public class GoogleOAuth2Helper {
     }
 
     /**
-     * 取得した認証コードからアクセス用のトークンとリフレーッシュトークンを作成する
-     * @param authCode
+     * リフレッシュトークンを渡す
+     * @param clientId
+     * @param clientSecret
+     * @param refreshTocken
+     * @param listener
+     * @return
      */
-    public static AuthToken getAuthToken(final String clientId, final String clientSecret, final String redirectUri,
-            final String authCode) throws WebAPIException {
+    public static SimpleModelRequest<AuthToken> refreshAuthToken(final String clientId, final String clientSecret,
+            final String refreshTocken, RequestListener<AuthToken> listener) {
 
-        try {
-            // パラメータを組み立てる
-            StringBuilder b = new StringBuilder();
-            b.append("code=").append(URLEncoder.encode(authCode, "utf-8"));
-            b.append("&client_id=").append(URLEncoder.encode(clientId, "utf-8"));
-            b.append("&client_secret=").append(URLEncoder.encode(clientSecret, "utf-8"));
-            b.append("&redirect_uri=").append(URLEncoder.encode(redirectUri, "utf-8"));
-            //            b.append("&grant_type=authorization_code");
-            b.append("&grant_type=").append(URLEncoder.encode("authorization_code", "utf-8"));
-            byte[] payload = b.toString().getBytes();
-
-            // POST メソッドでリクエストする
-            URL url = new URL(ENDPOINT + "/token");
-            LogUtil.log("url = " + url.toString());
-            HttpURLConnection c = (HttpURLConnection) url.openConnection();
-            c.setRequestMethod("POST");
-            c.setDoOutput(true);
-            c.setDoInput(true);
-            c.setConnectTimeout(TIMEOUT_MS);
-            c.setRequestProperty("Content-Length", String.valueOf(payload.length));
-            c.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            c.connect();
-
-            {
-                OutputStream os = c.getOutputStream();
-                os.write(payload);
-                os.flush();
-                os.close();
-            }
-
-            int response = c.getResponseCode();
-            LogUtil.log("Response Code = " + response);
-
-            // 戻り値を確認する
-            if (response == HttpURLConnection.HTTP_OK) {
-                InputStream is = c.getInputStream();
-                String json = new String(GameUtil.toByteArray(is));
-                //                LogUtil.log("json = " + json);
-
-                AuthToken token = JSON.decode(json, AuthToken.class);
-
-                c.disconnect();
-                return token;
-            } else {
-                InputStream is = c.getErrorStream();
-                String json = new String(GameUtil.toByteArray(is));
-                LogUtil.log("error = " + json);
-                c.disconnect();
-                throw new WebAPIException(response);
-            }
-        } catch (IOException e) {
-            LogUtil.log(e);
-            throw new WebAPIException(e);
-        }
+        SimpleModelRequest<AuthToken> req = new SimpleModelRequest<AuthToken>(Request.Method.POST, ENDPOINT + "/token",
+                AuthToken.class, listener);
+        req.putForm("client_id", clientId);
+        req.putForm("client_secret", clientSecret);
+        req.putForm("grant_type", "authorization_code");
+        req.putForm("refresh_token", refreshTocken);
+        return req;
     }
 
     /**
