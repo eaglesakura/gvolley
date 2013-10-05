@@ -43,4 +43,12 @@ public class SpreadsheetDocumentList extends Model {
         this.id = root.childToString("id");
         this.updated = VolleyUtil.toDate(root.childToString("updated"));
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public Date getUpdated() {
+        return updated;
+    }
 }

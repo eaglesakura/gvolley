@@ -60,7 +60,7 @@ public class GoogleAuthActivity extends Activity implements GoogleOAuth2Fragment
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_auth);
-        provider = new AuthProvider(this, providerId);
+        provider = new AuthProvider(this, providerId, clientId, clientSecret);
         super.onCreate(savedInstanceState);
 
         // 引数を設定する

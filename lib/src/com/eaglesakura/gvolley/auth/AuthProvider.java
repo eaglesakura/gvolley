@@ -6,6 +6,8 @@ import android.content.Context;
 
 import com.eaglesakura.gvolley.auth.GoogleOAuth2Helper.AuthToken;
 import com.eaglesakura.gvolley.request.BaseRequest;
+import com.eaglesakura.gvolley.request.RequestListener;
+import com.eaglesakura.gvolley.request.SimpleModelRequest;
 import com.eaglesakura.lib.android.db.DBType;
 import com.eaglesakura.lib.android.db.TextKeyValueStore;
 import com.eaglesakura.lib.android.game.util.GameUtil;
@@ -31,6 +33,10 @@ public class AuthProvider {
 
     final Context context;
 
+    final String clientId;
+
+    final String clientSecret;
+
     private static final String TABLE_NAME = "tokens";
 
     private static final int DB_VERSION = 0x1;
@@ -41,9 +47,12 @@ public class AuthProvider {
      * @param uniqueId ストア内で一意に識別するためのID。英数で指定
      * @param dbFile
      */
-    public AuthProvider(Context context, String uniqueId) {
+    public AuthProvider(Context context, String uniqueId, String clientId, String clientSecret) {
         this.context = context;
         this.uniqueId = uniqueId;
+        this.clientId = clientId;
+        this.clientSecret = clientSecret;
+
         this.dbFile = new File(context.getFilesDir(), "gvolley-auth.db");
         dbFile.getParentFile().mkdirs();
         loadFromDB();
@@ -138,5 +147,14 @@ public class AuthProvider {
         if (accessApi != null) {
             req.putHeader("GData-Version", accessApi.getVersion());
         }
+    }
+
+    /**
+     * リフレッシュ用リクエストを発行する
+     * @param listener
+     * @return
+     */
+    public SimpleModelRequest<AuthToken> requestTokenRefresh(RequestListener<AuthToken> listener) {
+        return GoogleOAuth2Helper.refreshAuthToken(clientId, clientSecret, getRefreshToken(), listener);
     }
 }

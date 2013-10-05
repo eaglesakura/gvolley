@@ -13,7 +13,7 @@ import com.android.volley.toolbox.Volley;
 import com.eaglesakura.gvolley.auth.AuthProvider;
 import com.eaglesakura.gvolley.auth.GoogleAuthActivity;
 import com.eaglesakura.gvolley.auth.Scopes;
-import com.eaglesakura.gvolley.request.ProgressRequestListener;
+import com.eaglesakura.gvolley.request.AuthorizedProgressRequestListener;
 import com.eaglesakura.gvolley.request.XmlRequest;
 import com.eaglesakura.gvolley.spreadsheet.SpreadsheetDocumentList;
 import com.eaglesakura.lib.android.game.util.LogUtil;
@@ -30,7 +30,8 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        provider = new AuthProvider(this, "sptest");
+        provider = new AuthProvider(this, "sptest", getString(R.string.oauth2_clientId),
+                getString(R.string.oauth2_clientSecret));
         queue = Volley.newRequestQueue(this);
         setContentView(R.layout.activity_main);
         super.onCreate(savedInstanceState);
@@ -64,7 +65,8 @@ public class MainActivity extends Activity {
     @UiThread
     void loadSpreadsheets() {
         String url = "https://spreadsheets.google.com/feeds/spreadsheets/private/full";
-        ProgressRequestListener<XmlElement> dialog = new ProgressRequestListener<XmlElement>(this, queue) {
+        AuthorizedProgressRequestListener<XmlElement> dialog = new AuthorizedProgressRequestListener<XmlElement>(this,
+                queue, provider) {
 
             @Override
             protected void onSuccess(XmlElement response) {
@@ -77,8 +79,9 @@ public class MainActivity extends Activity {
             }
 
             @Override
-            protected void onError(VolleyError error) {
-                LogUtil.log(error.getMessage());
+            protected void onError2(VolleyError error) {
+                // TODO Auto-generated method stub
+
             }
         };
         XmlRequest req = new XmlRequest(Request.Method.GET, url, dialog);
