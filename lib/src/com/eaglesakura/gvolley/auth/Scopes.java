@@ -12,8 +12,8 @@ public enum Scopes {
         }
 
         @Override
-        public int getVersion() {
-            return 3;
+        public String getVersion() {
+            return "3.0";
         }
     },
 
@@ -24,8 +24,8 @@ public enum Scopes {
         }
 
         @Override
-        public int getVersion() {
-            return 2;
+        public String getVersion() {
+            return "2.0";
         }
     },
 
@@ -36,12 +36,12 @@ public enum Scopes {
         }
 
         @Override
-        public int getVersion() {
-            return 1;
+        public String getVersion() {
+            return "1.0";
         }
     };
 
     public abstract String getURL();
 
-    public abstract int getVersion();
+    public abstract String getVersion();
 }

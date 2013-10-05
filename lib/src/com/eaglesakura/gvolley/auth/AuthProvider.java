@@ -5,6 +5,7 @@ import java.io.File;
 import android.content.Context;
 
 import com.eaglesakura.gvolley.auth.GoogleOAuth2Helper.AuthToken;
+import com.eaglesakura.gvolley.request.BaseRequest;
 import com.eaglesakura.lib.android.db.DBType;
 import com.eaglesakura.lib.android.db.TextKeyValueStore;
 import com.eaglesakura.lib.android.game.util.GameUtil;
@@ -121,5 +122,21 @@ public class AuthProvider {
      */
     public String getUniqueId() {
         return uniqueId;
+    }
+
+    /**
+     * OAuth2認証を付与する
+     * @param <T>
+     * @param req リクエスト
+     * @param accessApi アクセス対象のAPI
+     */
+    public <T> void authorize(BaseRequest<T> req, Scopes accessApi) {
+        if (!isAuthorized()) {
+            throw new IllegalStateException("token not found");
+        }
+        req.putHeader("Authorization", "OAuth " + getAccessToken());
+        if (accessApi != null) {
+            req.putHeader("GData-Version", accessApi.getVersion());
+        }
     }
 }
