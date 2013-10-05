@@ -15,7 +15,7 @@ import com.eaglesakura.lib.android.game.util.LogUtil;
  *
  * @param <T>
  */
-public class SimpleModelRequest<T> extends BaseRequest<T, T> {
+public class SimpleModelRequest<T> extends BaseRequest<T> {
     /**
      * 
      */

@@ -8,7 +8,7 @@ import com.eaglesakura.gvolley.request.listener.RequestListener;
 /**
  * 指定したヘッダを取得するリクエスト
  */
-public class HeaderRequest extends BaseRequest<String, String> {
+public class HeaderRequest extends BaseRequest<String> {
 
     final String headerKey;
 

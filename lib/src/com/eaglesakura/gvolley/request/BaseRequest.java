@@ -17,9 +17,9 @@ import com.eaglesakura.gvolley.request.listener.RequestListener;
  * receiveで受け取ってconvertへコンバートして流すことも可能
  * @param <T>
  */
-public abstract class BaseRequest<Convert, Receive> extends Request<Receive> {
+public abstract class BaseRequest<T> extends Request<T> {
 
-    protected final RequestListener<Convert> listener;
+    protected final RequestListener<T> listener;
 
     /**
      * query string params
@@ -41,7 +41,7 @@ public abstract class BaseRequest<Convert, Receive> extends Request<Receive> {
      */
     private ContentType contentType;
 
-    public BaseRequest(int method, String url, RequestListener<Convert> listener) {
+    public BaseRequest(int method, String url, RequestListener<T> listener) {
         super(method, url, listener);
 
         this.listener = listener;
@@ -128,23 +128,13 @@ public abstract class BaseRequest<Convert, Receive> extends Request<Receive> {
     }
 
     @Override
-    public int compareTo(Request<Receive> another) {
+    public int compareTo(Request<T> another) {
         return getUrl().compareTo(another.getUrl());
     }
 
-    /**
-     * レスポンスを所定オブジェクトにコンバートする
-     * @param response
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    protected Convert convert(Receive response) {
-        return (Convert) response;
-    }
-
     @Override
-    protected void deliverResponse(Receive response) {
-        listener.onResponse(convert(response));
+    protected void deliverResponse(T response) {
+        listener.onResponse(response);
     }
 
 }

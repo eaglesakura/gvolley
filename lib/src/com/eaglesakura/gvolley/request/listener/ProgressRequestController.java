@@ -14,7 +14,8 @@ import com.eaglesakura.lib.android.game.thread.UIHandler;
  *
  * @param <T>
  */
-public abstract class ProgressRequestController<C> extends RequestListener<C> implements DialogInterface.OnCancelListener {
+public abstract class ProgressRequestController<T> extends RequestListener<T> implements
+        DialogInterface.OnCancelListener {
 
     /**
      * 表示用のダイアログ
@@ -24,7 +25,7 @@ public abstract class ProgressRequestController<C> extends RequestListener<C> im
     /**
      * 進捗中のリクエスト
      */
-    BaseRequest<C, ?> request;
+    BaseRequest<T> request;
 
     final RequestQueue queue;
 
@@ -53,7 +54,7 @@ public abstract class ProgressRequestController<C> extends RequestListener<C> im
      * リクエストを設定し、キューへ追加する
      * @param req
      */
-    public ProgressRequestController<C> addRequestQueue(BaseRequest<C, ?> req) {
+    public ProgressRequestController<T> addRequestQueue(BaseRequest<T> req) {
         this.request = req;
         queue.add(req);
         queue.start();
@@ -64,7 +65,7 @@ public abstract class ProgressRequestController<C> extends RequestListener<C> im
      * 設定されているリクエストを得る
      * @return
      */
-    public BaseRequest<C, ?> getRequest() {
+    public BaseRequest<T> getRequest() {
         return request;
     }
 
@@ -72,7 +73,7 @@ public abstract class ProgressRequestController<C> extends RequestListener<C> im
      * ダイアログを表示する
      * @return
      */
-    public ProgressRequestController<C> show() {
+    public ProgressRequestController<T> show() {
         UIHandler.postUI(new Runnable() {
             @Override
             public void run() {

@@ -15,7 +15,7 @@ import com.eaglesakura.lib.android.game.thread.UIHandler;
  *
  * @param <T>
  */
-public abstract class AurhorizedProgressRequestController<C> extends AuthorizedRequestController<C> implements
+public abstract class AurhorizedProgressRequestController<T> extends AuthorizedRequestController<T> implements
         DialogInterface.OnCancelListener {
 
     /**
@@ -48,7 +48,7 @@ public abstract class AurhorizedProgressRequestController<C> extends AuthorizedR
      * 設定されているリクエストを得る
      * @return
      */
-    public BaseRequest<C, ?> getRequest() {
+    public BaseRequest<T> getRequest() {
         return request;
     }
 
@@ -56,7 +56,7 @@ public abstract class AurhorizedProgressRequestController<C> extends AuthorizedR
      * ダイアログを表示する
      * @return
      */
-    public AurhorizedProgressRequestController<C> show() {
+    public AurhorizedProgressRequestController<T> show() {
         UIHandler.postUI(new Runnable() {
             @Override
             public void run() {

@@ -34,7 +34,7 @@ public abstract class AuthorizedRequestController<T> extends RequestListener<T> 
      * リクエスト本体
      * 認証エラーが発生した場合、このインスタンスを使いまわして再度通信を試みる。
      */
-    BaseRequest<T, ?> request;
+    protected BaseRequest<T> request;
 
     public AuthorizedRequestController(RequestQueue queue, OAuthProvider provider) {
         this.queue = queue;
@@ -45,7 +45,7 @@ public abstract class AuthorizedRequestController<T> extends RequestListener<T> 
      * 通信を開始する
      * @param req
      */
-    public void addRequestQueue(BaseRequest<T, ?> req) {
+    public void addRequestQueue(BaseRequest<T> req) {
         provider.authorize(req, null);
         this.queue.add(req);
         this.queue.start();

@@ -7,7 +7,7 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.eaglesakura.gvolley.request.listener.RequestListener;
 
-public class StringRequest extends BaseRequest<String, String> {
+public class StringRequest extends BaseRequest<String> {
     public StringRequest(int method, String url, RequestListener<String> listener) {
         super(method, url, listener);
     }

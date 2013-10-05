@@ -154,7 +154,7 @@ public class OAuthProvider {
      * @param req リクエスト
      * @param accessApi アクセス対象のAPI
      */
-    public <C, R> void authorize(BaseRequest<C, R> req, Scopes accessApi) {
+    public <T> void authorize(BaseRequest<T> req, Scopes accessApi) {
         if (!isAuthorized()) {
             throw new IllegalStateException("token not found");
         }
