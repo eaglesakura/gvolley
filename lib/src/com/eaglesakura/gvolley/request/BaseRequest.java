@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
+import com.eaglesakura.gvolley.ContentType;
 
 /**
  * リクエスト処理の共通部位を記述
@@ -28,6 +29,16 @@ public abstract class BaseRequest<T> extends Request<T> {
      * ヘッダ一覧
      */
     private Map<String, String> headers = new HashMap<String, String>();
+
+    /**
+     * フォームデータを送信する場合
+     */
+    private Map<String, String> formParams = new HashMap<String, String>();
+
+    /**
+     * コンテンツタイプ
+     */
+    private ContentType contentType;
 
     public BaseRequest(int method, String url, RequestListener<T> listener) {
         super(method, url, listener);
@@ -56,6 +67,37 @@ public abstract class BaseRequest<T> extends Request<T> {
      */
     public void putQuery(String key, String value) {
         queries.put(key, value);
+    }
+
+    /**
+     * フォーム送信用のパラメータを組み立てる
+     * @param key
+     * @param value
+     */
+    public void putForm(String key, String value) {
+        formParams.put(key, value);
+        contentType = ContentType.WebFormUTF8;
+    }
+
+    @Override
+    public String getBodyContentType() {
+        if (contentType != null) {
+            return contentType.getContentType();
+        } else {
+            return super.getBodyContentType();
+        }
+    }
+
+    /**
+     * フォームデータが存在していたらそれを返し、存在しなければsuperに従う。
+     */
+    @Override
+    protected Map<String, String> getParams() throws AuthFailureError {
+        if (formParams.isEmpty()) {
+            return super.getParams();
+        } else {
+            return formParams;
+        }
     }
 
     @Override

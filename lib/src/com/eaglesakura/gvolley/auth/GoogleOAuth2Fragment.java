@@ -7,7 +7,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -21,13 +20,13 @@ import android.webkit.WebViewClient;
 import android.webkit.WebViewDatabase;
 
 import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.eaglesakura.gvolley.auth.GoogleOAuth2Helper.AuthToken;
-import com.eaglesakura.lib.android.game.thread.AsyncAction;
+import com.eaglesakura.gvolley.request.ProgressRequestListener;
 import com.eaglesakura.lib.android.game.thread.UIHandler;
 import com.eaglesakura.lib.android.game.util.FileUtil;
 import com.eaglesakura.lib.android.game.util.LogUtil;
-import com.eaglesakura.lib.net.WebAPIException;
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.Background;
 import com.googlecode.androidannotations.annotations.EFragment;
@@ -256,49 +255,65 @@ public class GoogleOAuth2Fragment extends Fragment {
         if (!isExist()) {
             return;
         }
-        final Dialog dialog = createAccesTokenLoadingDialog();
-        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                listener.onAuthCanceled(get_this());
-            }
-        });
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.show();
-        (new AsyncAction() {
 
+        ProgressRequestListener<AuthToken> tokenListener = new ProgressRequestListener<AuthToken>(getActivity()) {
             @Override
-            protected void onSuccess(Object object) {
-                if (!isExist()) {
-                    return;
-                }
-
-                AuthToken token = (AuthToken) object;
-                listener.onMakeTokenComplete(get_this(), token);
+            protected void onSuccess(AuthToken response) {
+                listener.onMakeTokenComplete(get_this(), response);
             }
 
             @Override
-            protected void onFailure(Exception exception) {
-                listener.onErrorMakeAuthToken(get_this(), (WebAPIException) exception);
+            protected void onError(VolleyError error) {
+                listener.onErrorMakeAuthToken(get_this(), error);
             }
-
-            @Override
-            protected void onFinalize() {
-                super.onFinalize();
-
-                if (isExist()) {
-                    if (dialog.isShowing()) {
-                        dialog.dismiss();
-                    }
-                }
-            }
-
-            @Override
-            protected Object onBackgroundAction() throws Exception {
-                AuthToken token = GoogleOAuth2Helper.getAuthToken(clientId, clientSecret, redirectUri, authCode);
-                return token;
-            }
-        }).start();
+        };
+        tokenListener.setRequest(
+                GoogleOAuth2Helper.getAuthToken(clientId, clientSecret, redirectUri, authCode, tokenListener)).show();
+        requests.add(tokenListener.getRequest());
+        requests.start();
+        //        final Dialog dialog = createAccesTokenLoadingDialog();
+        //        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+        //            @Override
+        //            public void onCancel(DialogInterface dialog) {
+        //                listener.onAuthCanceled(get_this());
+        //            }
+        //        });
+        //        dialog.setCanceledOnTouchOutside(false);
+        //        dialog.show();
+        //        (new AsyncAction() {
+        //
+        //            @Override
+        //            protected void onSuccess(Object object) {
+        //                if (!isExist()) {
+        //                    return;
+        //                }
+        //
+        //                AuthToken token = (AuthToken) object;
+        //                listener.onMakeTokenComplete(get_this(), token);
+        //            }
+        //
+        //            @Override
+        //            protected void onFailure(Exception exception) {
+        //                listener.onErrorMakeAuthToken(get_this(), (WebAPIException) exception);
+        //            }
+        //
+        //            @Override
+        //            protected void onFinalize() {
+        //                super.onFinalize();
+        //
+        //                if (isExist()) {
+        //                    if (dialog.isShowing()) {
+        //                        dialog.dismiss();
+        //                    }
+        //                }
+        //            }
+        //
+        //            @Override
+        //            protected Object onBackgroundAction() throws Exception {
+        //                AuthToken token = GoogleOAuth2Helper.getAuthToken(clientId, clientSecret, redirectUri, authCode);
+        //                return token;
+        //            }
+        //        }).start();
     }
 
     private GoogleOAuth2Fragment get_this() {
@@ -326,14 +341,9 @@ public class GoogleOAuth2Fragment extends Fragment {
         public void onMakeTokenComplete(GoogleOAuth2Fragment fragment, GoogleOAuth2Helper.AuthToken token);
 
         /**
-         * トークンのURL作成に失敗した
-         */
-        public void onErrorMakeAuthURL(GoogleOAuth2Fragment fragment, WebAPIException e);
-
-        /**
          * トークンの取得に失敗した
          */
-        public void onErrorMakeAuthToken(GoogleOAuth2Fragment fragment, WebAPIException e);
+        public void onErrorMakeAuthToken(GoogleOAuth2Fragment fragment, VolleyError e);
 
         /**
          * キャンセルされた

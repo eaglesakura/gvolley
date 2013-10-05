@@ -6,11 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.android.volley.VolleyError;
 import com.eaglesakura.aautil.EUtil;
 import com.eaglesakura.gvolley.R;
 import com.eaglesakura.gvolley.auth.GoogleOAuth2Helper.AuthToken;
 import com.eaglesakura.lib.android.game.util.LogUtil;
-import com.eaglesakura.lib.net.WebAPIException;
 import com.googlecode.androidannotations.annotations.EActivity;
 import com.googlecode.androidannotations.annotations.Extra;
 
@@ -64,20 +64,13 @@ public class GoogleAuthActivity extends Activity implements GoogleOAuth2Fragment
     }
 
     @Override
-    public void onErrorMakeAuthToken(GoogleOAuth2Fragment fragment, WebAPIException e) {
-        LogUtil.log(e);
+    public void onErrorMakeAuthToken(GoogleOAuth2Fragment fragment, VolleyError e) {
         LogUtil.log("onErrorMakeAuthToken :: " + e.getMessage());
     }
 
     @Override
-    public void onErrorMakeAuthURL(GoogleOAuth2Fragment fragment, WebAPIException e) {
-        LogUtil.log(e);
-        LogUtil.log("onErrorMakeAuthURL :: " + e.getMessage());
-    }
-
-    @Override
     public void onMakeTokenComplete(GoogleOAuth2Fragment fragment, AuthToken token) {
-        LogUtil.log("onMakeTokenComplete :: " + token);
+        LogUtil.log("onMakeTokenComplete :: " + token.access_token + "/" + token.refresh_token);
     }
 
     /**

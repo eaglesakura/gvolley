@@ -12,8 +12,11 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.android.volley.Request;
 import com.eaglesakura.gvolley.json.JSON;
 import com.eaglesakura.gvolley.json.Model;
+import com.eaglesakura.gvolley.request.RequestListener;
+import com.eaglesakura.gvolley.request.SimpleModelRequest;
 import com.eaglesakura.lib.android.game.util.GameUtil;
 import com.eaglesakura.lib.android.game.util.LogUtil;
 import com.eaglesakura.lib.net.WebAPIException;
@@ -85,6 +88,26 @@ public class GoogleOAuth2Helper {
         queries.put("approval_prompt", "force");
 
         return makeQueryUrl(ENDPOINT + "/auth", queries);
+    }
+
+    /**
+     * 認証コードからアクセストークンとリフレッシュトークンを取得する
+     * @param clientId
+     * @param clientSecret
+     * @param redirectUri
+     * @param authCode
+     * @return
+     */
+    public static SimpleModelRequest<AuthToken> getAuthToken(final String clientId, final String clientSecret,
+            final String redirectUri, final String authCode, RequestListener<AuthToken> listener) {
+        SimpleModelRequest<AuthToken> req = new SimpleModelRequest<AuthToken>(Request.Method.POST, ENDPOINT + "/token",
+                AuthToken.class, listener);
+        req.putForm("code", authCode);
+        req.putForm("client_id", clientId);
+        req.putForm("client_secret", clientSecret);
+        req.putForm("redirect_uri", redirectUri);
+        req.putForm("grant_type", "authorization_code");
+        return req;
     }
 
     /**
