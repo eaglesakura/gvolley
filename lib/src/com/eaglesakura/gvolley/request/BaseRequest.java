@@ -10,15 +10,16 @@ import java.util.Map.Entry;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.eaglesakura.gvolley.ContentType;
+import com.eaglesakura.gvolley.request.listener.RequestListener;
 
 /**
  * リクエスト処理の共通部位を記述
- *
+ * receiveで受け取ってconvertへコンバートして流すことも可能
  * @param <T>
  */
-public abstract class BaseRequest<T> extends Request<T> {
+public abstract class BaseRequest<Convert, Receive> extends Request<Receive> {
 
-    protected final RequestListener<T> listener;
+    protected final RequestListener<Convert> listener;
 
     /**
      * query string params
@@ -40,7 +41,7 @@ public abstract class BaseRequest<T> extends Request<T> {
      */
     private ContentType contentType;
 
-    public BaseRequest(int method, String url, RequestListener<T> listener) {
+    public BaseRequest(int method, String url, RequestListener<Convert> listener) {
         super(method, url, listener);
 
         this.listener = listener;
@@ -127,13 +128,23 @@ public abstract class BaseRequest<T> extends Request<T> {
     }
 
     @Override
-    public int compareTo(Request<T> another) {
+    public int compareTo(Request<Receive> another) {
         return getUrl().compareTo(another.getUrl());
     }
 
+    /**
+     * レスポンスを所定オブジェクトにコンバートする
+     * @param response
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    protected Convert convert(Receive response) {
+        return (Convert) response;
+    }
+
     @Override
-    protected void deliverResponse(T response) {
-        listener.onResponse(response);
+    protected void deliverResponse(Receive response) {
+        listener.onResponse(convert(response));
     }
 
 }

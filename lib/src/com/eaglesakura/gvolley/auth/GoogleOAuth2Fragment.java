@@ -24,7 +24,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.eaglesakura.gvolley.auth.GoogleOAuth2Helper.AuthToken;
-import com.eaglesakura.gvolley.request.ProgressRequestListener;
+import com.eaglesakura.gvolley.request.listener.ProgressRequestListener;
 import com.eaglesakura.lib.android.game.thread.UIHandler;
 import com.eaglesakura.lib.android.game.util.FileUtil;
 import com.eaglesakura.lib.android.game.util.LogUtil;

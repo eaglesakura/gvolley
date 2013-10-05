@@ -15,8 +15,8 @@ import com.android.volley.toolbox.Volley;
 import com.eaglesakura.gvolley.auth.AuthProvider;
 import com.eaglesakura.gvolley.auth.GoogleAuthActivity;
 import com.eaglesakura.gvolley.auth.Scopes;
-import com.eaglesakura.gvolley.request.AuthorizedProgressRequestListener;
-import com.eaglesakura.gvolley.request.XmlRequest;
+import com.eaglesakura.gvolley.request.BaseXmlRequest;
+import com.eaglesakura.gvolley.request.listener.AuthorizedProgressRequestListener;
 import com.eaglesakura.gvolley.spreadsheet.SpreadsheetDocumentList;
 import com.eaglesakura.gvolley.spreadsheet.SpreadsheetEntry;
 import com.eaglesakura.lib.android.game.util.LogUtil;
@@ -68,15 +68,11 @@ public class MainActivity extends Activity {
     @UiThread
     void loadSpreadsheets() {
         String url = "https://spreadsheets.google.com/feeds/spreadsheets/private/full";
-        AuthorizedProgressRequestListener<XmlElement> dialog = new AuthorizedProgressRequestListener<XmlElement>(this,
-                queue, provider) {
+        AuthorizedProgressRequestListener<SpreadsheetDocumentList> dialog = new AuthorizedProgressRequestListener<SpreadsheetDocumentList>(
+                this, queue, provider) {
 
             @Override
-            protected void onSuccess(XmlElement response) {
-                LogUtil.log("success ::  " + response);
-
-                SpreadsheetDocumentList documents = new SpreadsheetDocumentList(response);
-
+            protected void onSuccess(SpreadsheetDocumentList documents) {
                 LogUtil.log("id :: " + documents.getId());
                 LogUtil.log("updated :: " + documents.getUpdated().toString());
 
@@ -94,7 +90,13 @@ public class MainActivity extends Activity {
 
             }
         };
-        XmlRequest req = new XmlRequest(Request.Method.GET, url, dialog);
+        BaseXmlRequest<SpreadsheetDocumentList> req = new BaseXmlRequest<SpreadsheetDocumentList>(Request.Method.GET,
+                url, dialog) {
+            @Override
+            public SpreadsheetDocumentList convert(XmlElement response) {
+                return new SpreadsheetDocumentList(response);
+            }
+        };
         dialog.addRequestQueue(req).show();
     }
 

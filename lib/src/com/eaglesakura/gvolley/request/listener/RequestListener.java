@@ -1,7 +1,6 @@
-package com.eaglesakura.gvolley.request;
+package com.eaglesakura.gvolley.request.listener;
 
 import com.android.volley.Response.ErrorListener;
-import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 
 /**
@@ -9,12 +8,11 @@ import com.android.volley.VolleyError;
  *
  * @param <T>
  */
-public abstract class RequestListener<T> implements Listener<T>, ErrorListener {
+public abstract class RequestListener<T> implements ErrorListener {
 
     public RequestListener() {
     }
 
-    @Override
     public final void onResponse(T response) {
         onSuccess(response);
         onFinalize(true);

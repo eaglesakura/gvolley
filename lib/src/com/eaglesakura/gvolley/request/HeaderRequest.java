@@ -3,11 +3,12 @@ package com.eaglesakura.gvolley.request;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.eaglesakura.gvolley.request.listener.RequestListener;
 
 /**
  * 指定したヘッダを取得するリクエスト
  */
-public class HeaderRequest extends BaseRequest<String> {
+public class HeaderRequest extends BaseRequest<String, String> {
 
     final String headerKey;
 

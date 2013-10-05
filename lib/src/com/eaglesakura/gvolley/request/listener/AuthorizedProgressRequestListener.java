@@ -1,4 +1,4 @@
-package com.eaglesakura.gvolley.request;
+package com.eaglesakura.gvolley.request.listener;
 
 import android.content.Context;
 
@@ -6,9 +6,16 @@ import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.eaglesakura.gvolley.auth.AuthProvider;
 import com.eaglesakura.gvolley.auth.GoogleOAuth2Helper.AuthToken;
+import com.eaglesakura.gvolley.request.BaseRequest;
+import com.eaglesakura.gvolley.request.SimpleModelRequest;
 import com.eaglesakura.lib.android.game.util.LogUtil;
 
-public abstract class AuthorizedProgressRequestListener<T> extends ProgressRequestListener<T> {
+/**
+ * 認証済みのリクエストを受け取るリスナー
+ *
+ * @param <T>
+ */
+public abstract class AuthorizedProgressRequestListener<C> extends ProgressRequestListener<C> {
 
     final AuthProvider provider;
 
@@ -20,7 +27,7 @@ public abstract class AuthorizedProgressRequestListener<T> extends ProgressReque
     }
 
     @Override
-    public ProgressRequestListener<T> addRequestQueue(BaseRequest<T> req) {
+    public ProgressRequestListener<C> addRequestQueue(BaseRequest<C, ?> req) {
         // 認証付与を行う
         provider.authorize(req, null);
         return super.addRequestQueue(req);

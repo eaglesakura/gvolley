@@ -6,8 +6,8 @@ import android.content.Context;
 
 import com.eaglesakura.gvolley.auth.GoogleOAuth2Helper.AuthToken;
 import com.eaglesakura.gvolley.request.BaseRequest;
-import com.eaglesakura.gvolley.request.RequestListener;
 import com.eaglesakura.gvolley.request.SimpleModelRequest;
+import com.eaglesakura.gvolley.request.listener.RequestListener;
 import com.eaglesakura.lib.android.db.DBType;
 import com.eaglesakura.lib.android.db.TextKeyValueStore;
 import com.eaglesakura.lib.android.game.util.GameUtil;
@@ -139,7 +139,7 @@ public class AuthProvider {
      * @param req リクエスト
      * @param accessApi アクセス対象のAPI
      */
-    public <T> void authorize(BaseRequest<T> req, Scopes accessApi) {
+    public <C, R> void authorize(BaseRequest<C, R> req, Scopes accessApi) {
         if (!isAuthorized()) {
             throw new IllegalStateException("token not found");
         }

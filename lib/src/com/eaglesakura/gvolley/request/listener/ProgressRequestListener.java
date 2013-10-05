@@ -1,4 +1,4 @@
-package com.eaglesakura.gvolley.request;
+package com.eaglesakura.gvolley.request.listener;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 
 import com.android.volley.RequestQueue;
 import com.eaglesakura.gvolley.R;
+import com.eaglesakura.gvolley.request.BaseRequest;
 import com.eaglesakura.lib.android.game.thread.UIHandler;
 
 /**
@@ -13,7 +14,7 @@ import com.eaglesakura.lib.android.game.thread.UIHandler;
  *
  * @param <T>
  */
-public abstract class ProgressRequestListener<T> extends RequestListener<T> implements DialogInterface.OnCancelListener {
+public abstract class ProgressRequestListener<C> extends RequestListener<C> implements DialogInterface.OnCancelListener {
 
     /**
      * 表示用のダイアログ
@@ -23,7 +24,7 @@ public abstract class ProgressRequestListener<T> extends RequestListener<T> impl
     /**
      * 進捗中のリクエスト
      */
-    BaseRequest<T> request;
+    BaseRequest<C, ?> request;
 
     final RequestQueue queue;
 
@@ -52,7 +53,7 @@ public abstract class ProgressRequestListener<T> extends RequestListener<T> impl
      * リクエストを設定し、キューへ追加する
      * @param req
      */
-    public ProgressRequestListener<T> addRequestQueue(BaseRequest<T> req) {
+    public ProgressRequestListener<C> addRequestQueue(BaseRequest<C, ?> req) {
         this.request = req;
         queue.add(req);
         queue.start();
@@ -63,7 +64,7 @@ public abstract class ProgressRequestListener<T> extends RequestListener<T> impl
      * 設定されているリクエストを得る
      * @return
      */
-    public BaseRequest<T> getRequest() {
+    public BaseRequest<C, ?> getRequest() {
         return request;
     }
 
@@ -71,7 +72,7 @@ public abstract class ProgressRequestListener<T> extends RequestListener<T> impl
      * ダイアログを表示する
      * @return
      */
-    public ProgressRequestListener<T> show() {
+    public ProgressRequestListener<C> show() {
         UIHandler.postUI(new Runnable() {
             @Override
             public void run() {

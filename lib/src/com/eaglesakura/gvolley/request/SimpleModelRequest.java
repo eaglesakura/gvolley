@@ -7,6 +7,7 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.eaglesakura.gvolley.json.JSON;
+import com.eaglesakura.gvolley.request.listener.RequestListener;
 import com.eaglesakura.lib.android.game.util.LogUtil;
 
 /**
@@ -14,7 +15,7 @@ import com.eaglesakura.lib.android.game.util.LogUtil;
  *
  * @param <T>
  */
-public class SimpleModelRequest<T> extends BaseRequest<T> {
+public class SimpleModelRequest<T> extends BaseRequest<T, T> {
     /**
      * 
      */

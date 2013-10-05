@@ -5,12 +5,13 @@ import java.io.ByteArrayInputStream;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.eaglesakura.gvolley.request.listener.RequestListener;
 import com.eaglesakura.lib.android.game.util.LogUtil;
 import com.eaglesakura.lib.io.XmlElement;
 
-public class XmlRequest extends BaseRequest<XmlElement> {
+public abstract class BaseXmlRequest<T> extends BaseRequest<T, XmlElement> {
 
-    public XmlRequest(int method, String url, RequestListener<XmlElement> listener) {
+    public BaseXmlRequest(int method, String url, RequestListener<T> listener) {
         super(method, url, listener);
     }
 
@@ -26,4 +27,6 @@ public class XmlRequest extends BaseRequest<XmlElement> {
         return Response.error(new VolleyError("Xml Parse error"));
     }
 
+    @Override
+    protected abstract T convert(XmlElement response);
 }
