@@ -1,5 +1,7 @@
 package com.eaglesakura.gvolley;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +18,7 @@ import com.eaglesakura.gvolley.auth.Scopes;
 import com.eaglesakura.gvolley.request.AuthorizedProgressRequestListener;
 import com.eaglesakura.gvolley.request.XmlRequest;
 import com.eaglesakura.gvolley.spreadsheet.SpreadsheetDocumentList;
+import com.eaglesakura.gvolley.spreadsheet.SpreadsheetEntry;
 import com.eaglesakura.lib.android.game.util.LogUtil;
 import com.eaglesakura.lib.io.XmlElement;
 import com.googlecode.androidannotations.annotations.EActivity;
@@ -74,18 +77,24 @@ public class MainActivity extends Activity {
 
                 SpreadsheetDocumentList documents = new SpreadsheetDocumentList(response);
 
-                LogUtil.log("id :: " + documents.id);
-                LogUtil.log("updated :: " + documents.updated.toString());
+                LogUtil.log("id :: " + documents.getId());
+                LogUtil.log("updated :: " + documents.getUpdated().toString());
+
+                // シート一覧を取得する
+                List<SpreadsheetEntry> files = documents.getFiles();
+                for (SpreadsheetEntry entry : files) {
+                    LogUtil.log("title :: " + entry.getTitle());
+                    LogUtil.log("id :: " + entry.getId());
+                    LogUtil.log("worksheet :: " + entry.getWorksheetsUrl());
+                }
             }
 
             @Override
             protected void onError2(VolleyError error) {
-                // TODO Auto-generated method stub
 
             }
         };
         XmlRequest req = new XmlRequest(Request.Method.GET, url, dialog);
-        provider.authorize(req, Scopes.SPREADSHEET);
         dialog.addRequestQueue(req).show();
     }
 

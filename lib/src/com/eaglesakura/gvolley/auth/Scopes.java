@@ -15,6 +15,11 @@ public enum Scopes {
         public String getVersion() {
             return "3.0";
         }
+
+        @Override
+        public String getEndpoint() {
+            return "https://spreadsheets.google.com/feeds/";
+        }
     },
 
     Drive {
@@ -26,6 +31,11 @@ public enum Scopes {
         @Override
         public String getVersion() {
             return "2.0";
+        }
+
+        @Override
+        public String getEndpoint() {
+            return null;
         }
     },
 
@@ -39,9 +49,16 @@ public enum Scopes {
         public String getVersion() {
             return "1.0";
         }
+
+        @Override
+        public String getEndpoint() {
+            return null;
+        }
     };
 
     public abstract String getURL();
 
     public abstract String getVersion();
+
+    public abstract String getEndpoint();
 }

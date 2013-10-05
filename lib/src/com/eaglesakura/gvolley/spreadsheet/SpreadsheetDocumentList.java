@@ -1,6 +1,8 @@
 package com.eaglesakura.gvolley.spreadsheet;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import com.eaglesakura.gvolley.VolleyUtil;
 import com.eaglesakura.gvolley.json.Model;
@@ -14,34 +16,31 @@ public class SpreadsheetDocumentList extends Model {
     /**
      * ID
      */
-    public String id;
+    String id;
 
     /**
      * updated
      */
-    public Date updated;
+    Date updated;
 
     /**
      * 
      */
-    public Entry[] entries;
-
-    public static class Entry {
-        /**
-         * unique id
-         */
-        public String id;
-
-        /**
-         * タイトル
-         */
-        public String title;
-        public String tablesLink;
-    }
+    List<SpreadsheetEntry> files = new ArrayList<SpreadsheetEntry>();
 
     public SpreadsheetDocumentList(XmlElement root) {
         this.id = root.childToString("id");
         this.updated = VolleyUtil.toDate(root.childToString("updated"));
+        initializeEntries(root);
+
+    }
+
+    void initializeEntries(XmlElement root) {
+        List<XmlElement> childs = root.listChilds("entry");
+        for (XmlElement element : childs) {
+            SpreadsheetEntry entry = new SpreadsheetEntry(element);
+            files.add(entry);
+        }
     }
 
     public String getId() {
@@ -50,5 +49,23 @@ public class SpreadsheetDocumentList extends Model {
 
     public Date getUpdated() {
         return updated;
+    }
+
+    public List<SpreadsheetEntry> getFiles() {
+        return files;
+    }
+
+    /**
+     * 指定したファイルを取得する
+     * @param name
+     * @return
+     */
+    public SpreadsheetEntry getFile(String name) {
+        for (SpreadsheetEntry entry : files) {
+            if (entry.getTitle().equals(name)) {
+                return entry;
+            }
+        }
+        return null;
     }
 }

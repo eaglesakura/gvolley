@@ -20,6 +20,13 @@ public abstract class AuthorizedProgressRequestListener<T> extends ProgressReque
     }
 
     @Override
+    public ProgressRequestListener<T> addRequestQueue(BaseRequest<T> req) {
+        // 認証付与を行う
+        provider.authorize(req, null);
+        return super.addRequestQueue(req);
+    }
+
+    @Override
     protected final void onError(VolleyError error) {
         if (error.networkResponse.statusCode == 401) {
             // トークン交換を開始する

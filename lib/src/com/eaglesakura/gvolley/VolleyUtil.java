@@ -10,10 +10,6 @@ import java.util.Map.Entry;
 
 public class VolleyUtil {
 
-    public VolleyUtil() {
-        // TODO Auto-generated constructor stub
-    }
-
     /**
      * クエリ用URLを生成する
      * @param url
