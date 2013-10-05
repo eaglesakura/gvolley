@@ -3,9 +3,9 @@ package com.eaglesakura.gvolley.gdata.spreadsheet;
 import com.android.volley.Request;
 import com.eaglesakura.gvolley.auth.OAuthProvider;
 import com.eaglesakura.gvolley.auth.Scopes;
-import com.eaglesakura.gvolley.request.XmlRequest;
+import com.eaglesakura.gvolley.request.BaseRequest;
+import com.eaglesakura.gvolley.request.SimpleXmlRequest;
 import com.eaglesakura.gvolley.request.listener.RequestListener;
-import com.eaglesakura.lib.io.XmlElement;
 
 /**
  * Spreadsheetアクセス用リクエストを生成する
@@ -25,17 +25,27 @@ public class SpreadsheetProvider {
      * @param listener
      * @return
      */
-    public XmlRequest<SpreadsheetDocumentList> listDocuments(RequestListener<SpreadsheetDocumentList> listener) {
-        XmlRequest<SpreadsheetDocumentList> req = new XmlRequest<SpreadsheetDocumentList>(Request.Method.GET, ENDPOINT
-                + "spreadsheets/private/full", listener) {
-            @Override
-            protected SpreadsheetDocumentList convert(XmlElement response) {
-                return new SpreadsheetDocumentList(response);
-            }
+    public BaseRequest<SpreadsheetDocumentList> listDocuments(RequestListener<SpreadsheetDocumentList> listener) {
+        BaseRequest<SpreadsheetDocumentList> req = new SimpleXmlRequest<SpreadsheetDocumentList>(Request.Method.GET,
+                ENDPOINT + "spreadsheets/private/full", SpreadsheetDocumentList.class, listener) {
         };
 
-        // 認証を行う
-        provider.authorize(req, Scopes.SPREADSHEET);
+        provider.authorize(req, Scopes.SPREADSHEET); // 認証を行う
+        return req;
+    }
+
+    /**
+     * ワークシート詳細を読み込む
+     * @param listener
+     * @param entry
+     * @return
+     */
+    public BaseRequest<Worksheet> getWorksheet(RequestListener<Worksheet> listener, final WorksheetEntry entry) {
+        BaseRequest<Worksheet> req = new SimpleXmlRequest<Worksheet>(Request.Method.GET, ENDPOINT + "worksheets/"
+                + entry.getKey() + "/private/basic", Worksheet.class, listener) {
+        };
+
+        provider.authorize(req, Scopes.SPREADSHEET); // 認証を行う
         return req;
     }
 }

@@ -12,9 +12,12 @@ import com.android.volley.toolbox.Volley;
 import com.eaglesakura.gvolley.auth.GoogleAuthActivity;
 import com.eaglesakura.gvolley.auth.OAuthProvider;
 import com.eaglesakura.gvolley.auth.Scopes;
+import com.eaglesakura.gvolley.gdata.Link;
+import com.eaglesakura.gvolley.gdata.spreadsheet.SheetEntry;
 import com.eaglesakura.gvolley.gdata.spreadsheet.SpreadsheetDocumentList;
-import com.eaglesakura.gvolley.gdata.spreadsheet.SpreadsheetEntry;
 import com.eaglesakura.gvolley.gdata.spreadsheet.SpreadsheetProvider;
+import com.eaglesakura.gvolley.gdata.spreadsheet.Worksheet;
+import com.eaglesakura.gvolley.gdata.spreadsheet.WorksheetEntry;
 import com.eaglesakura.gvolley.request.listener.AurhorizedProgressRequestController;
 import com.eaglesakura.lib.android.game.util.LogUtil;
 import com.googlecode.androidannotations.annotations.EActivity;
@@ -75,17 +78,47 @@ public class MainActivity extends Activity {
                 LogUtil.log("updated :: " + documents.getUpdated().toString());
 
                 // シート一覧を取得する
-                SpreadsheetEntry entry = documents.getFiles().get(0);
+                WorksheetEntry entry = documents.entries.get(0);
                 LogUtil.log("title :: " + entry.getTitle());
                 LogUtil.log("id :: " + entry.getId());
                 LogUtil.log("worksheet :: " + entry.getWorksheetsUrl());
+
+                loadWorksheet(entry);
             }
 
             @Override
             protected void onVolleyError(VolleyError error) {
+                toast(error.getMessage());
             }
         };
         dialog.show().addRequestQueue(spreadsheet.listDocuments(dialog));
+    }
+
+    @UiThread
+    void loadWorksheet(WorksheetEntry entry) {
+        AurhorizedProgressRequestController<Worksheet> dialog = new AurhorizedProgressRequestController<Worksheet>(
+                this, queue, provider) {
+            @Override
+            protected void onSuccess(Worksheet response) {
+                LogUtil.log("title :: " + response.title);
+                LogUtil.log("sheets :: " + response.entries.size());
+
+                for (SheetEntry entry : response.entries) {
+                    LogUtil.log(" sheet :: " + entry.getTitle());
+                    for (Link link : entry.links) {
+                        LogUtil.log("  rel :: " + link.rel);
+                        LogUtil.log("  type :: " + link.type);
+                        LogUtil.log("  href :: " + link.href);
+                    }
+                }
+            }
+
+            @Override
+            protected void onVolleyError(VolleyError error) {
+                toast(error.getMessage());
+            }
+        };
+        dialog.show().addRequestQueue(spreadsheet.getWorksheet(dialog, entry));
     }
 
     @UiThread

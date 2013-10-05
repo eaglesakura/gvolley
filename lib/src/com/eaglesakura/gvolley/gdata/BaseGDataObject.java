@@ -4,27 +4,34 @@ import java.util.Date;
 
 import com.eaglesakura.gvolley.VolleyUtil;
 import com.eaglesakura.lib.io.XmlElement;
+import com.google.api.client.util.Key;
 
 public class BaseGDataObject {
     /**
      * オブジェクトタイトル
      */
-    final protected String title;
+    @Key
+    public String title;
 
     /**
      * 一意のID
      */
-    final protected String id;
+    @Key
+    public String id;
 
     /**
      * 更新日時
      */
-    final protected Date updated;
+    @Key
+    public Date updated;
 
     public BaseGDataObject(XmlElement element) {
         title = element.childToString("title");
         id = element.childToString("id");
         updated = VolleyUtil.toDate(element.childToString("updated"));
+    }
+
+    public BaseGDataObject() {
     }
 
     public String getTitle() {
