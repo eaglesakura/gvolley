@@ -22,7 +22,9 @@ import com.eaglesakura.gvolley.gdata.spreadsheet.Worksheet;
 import com.eaglesakura.gvolley.gdata.spreadsheet.WorksheetEntry;
 import com.eaglesakura.gvolley.request.listener.AurhorizedProgressRequestController;
 import com.eaglesakura.lib.android.game.util.LogUtil;
+import com.googlecode.androidannotations.annotations.Background;
 import com.googlecode.androidannotations.annotations.EActivity;
+import com.googlecode.androidannotations.annotations.OnActivityResult;
 import com.googlecode.androidannotations.annotations.UiThread;
 
 @EActivity
@@ -33,6 +35,8 @@ public class MainActivity extends Activity {
     RequestQueue queue = null;
 
     SpreadsheetProvider spreadsheet;
+
+    static final int REQUEST_ACCOUNT_AUTH = 0x3103;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +68,29 @@ public class MainActivity extends Activity {
                     Scopes.Spreadsheet.getURL()
                 }, provider);
         startActivity(intent);
+        //        GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        //        Intent intent = provider.newAccountPickIntentFromPlayservice(this);
+        //        startActivityForResult(intent, REQUEST_ACCOUNT_AUTH);
+    }
+
+    @Background
+    void authFromPlayservice(String account) {
+        try {
+            provider.authFromPlayservice(this, account, new String[] {
+                Scopes.Spreadsheet.getURL(),
+            });
+            loadSpreadsheets();
+        } catch (Exception e) {
+            LogUtil.log(e);
+        }
+    }
+
+    @OnActivityResult(REQUEST_ACCOUNT_AUTH)
+    void resultAuth(int result, Intent data) {
+        String accoutName = provider.onAccountPickResult(result, data);
+        if (accoutName != null) {
+            authFromPlayservice(accoutName);
+        }
     }
 
     /**

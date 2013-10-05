@@ -9,5 +9,6 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="auth_complete">Complete</string>
+    <string name="pickaccount_message">choose authorization account</string>
 
 </resources>

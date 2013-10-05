@@ -8,7 +8,7 @@ public enum Scopes {
     Spreadsheet {
         @Override
         public String getURL() {
-            return "https://spreadsheets.google.com/feeds/";
+            return "https://spreadsheets.google.com/feeds";
         }
 
         @Override
