@@ -3,7 +3,7 @@ package com.eaglesakura.gvolley.gdata.spreadsheet;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.eaglesakura.gvolley.gdata.BaseGDataObject;
+import com.eaglesakura.gvolley.gdata.model.BaseGDataObject;
 import com.google.api.client.util.Key;
 
 /**

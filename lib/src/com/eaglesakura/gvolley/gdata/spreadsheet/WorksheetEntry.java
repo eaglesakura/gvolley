@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.eaglesakura.gvolley.auth.Scopes;
-import com.eaglesakura.gvolley.gdata.Author;
-import com.eaglesakura.gvolley.gdata.BaseGDataObject;
+import com.eaglesakura.gvolley.gdata.model.Author;
+import com.eaglesakura.gvolley.gdata.model.BaseGDataObject;
 import com.google.api.client.util.Key;
 
 /**

@@ -2,8 +2,8 @@ package com.eaglesakura.gvolley.gdata.spreadsheet;
 
 import java.util.List;
 
-import com.eaglesakura.gvolley.gdata.BaseGDataObject;
-import com.eaglesakura.gvolley.gdata.Link;
+import com.eaglesakura.gvolley.gdata.model.BaseGDataObject;
+import com.eaglesakura.gvolley.gdata.model.Link;
 import com.google.api.client.util.Key;
 
 /**
