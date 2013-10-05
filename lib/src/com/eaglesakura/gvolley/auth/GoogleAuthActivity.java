@@ -55,12 +55,12 @@ public class GoogleAuthActivity extends Activity implements GoogleOAuth2Fragment
     /**
      * oauth情報保持クラス
      */
-    AuthProvider provider;
+    OAuthProvider provider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_auth);
-        provider = new AuthProvider(this, providerId, clientId, clientSecret);
+        provider = new OAuthProvider(this, providerId, clientId, clientSecret);
         super.onCreate(savedInstanceState);
 
         // 引数を設定する
@@ -111,7 +111,7 @@ public class GoogleAuthActivity extends Activity implements GoogleOAuth2Fragment
      * @return
      */
     public static Intent newIntent(Context context, Class<? extends GoogleAuthActivity> clazz, String clientId,
-            String clientSecret, String[] scopes, AuthProvider provider) {
+            String clientSecret, String[] scopes, OAuthProvider provider) {
         Intent intent = new Intent(context, EUtil.annotation(clazz));
         intent.putExtra(EXTRA_CLIENT_ID, clientId);
         intent.putExtra(EXTRA_CLIENT_SECRET, clientSecret);

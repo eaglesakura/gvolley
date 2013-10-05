@@ -12,11 +12,11 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
-import com.eaglesakura.gvolley.auth.AuthProvider;
 import com.eaglesakura.gvolley.auth.GoogleAuthActivity;
+import com.eaglesakura.gvolley.auth.OAuthProvider;
 import com.eaglesakura.gvolley.auth.Scopes;
 import com.eaglesakura.gvolley.request.BaseXmlRequest;
-import com.eaglesakura.gvolley.request.listener.AuthorizedProgressRequestListener;
+import com.eaglesakura.gvolley.request.listener.AurhorizedProgressRequestController;
 import com.eaglesakura.gvolley.spreadsheet.SpreadsheetDocumentList;
 import com.eaglesakura.gvolley.spreadsheet.SpreadsheetEntry;
 import com.eaglesakura.lib.android.game.util.LogUtil;
@@ -27,13 +27,13 @@ import com.googlecode.androidannotations.annotations.UiThread;
 @EActivity
 public class MainActivity extends Activity {
 
-    private AuthProvider provider;
+    private OAuthProvider provider;
 
     RequestQueue queue = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        provider = new AuthProvider(this, "sptest", getString(R.string.oauth2_clientId),
+        provider = new OAuthProvider(this, "sptest", getString(R.string.oauth2_clientId),
                 getString(R.string.oauth2_clientSecret));
         queue = Volley.newRequestQueue(this);
         setContentView(R.layout.activity_main);
@@ -68,7 +68,7 @@ public class MainActivity extends Activity {
     @UiThread
     void loadSpreadsheets() {
         String url = "https://spreadsheets.google.com/feeds/spreadsheets/private/full";
-        AuthorizedProgressRequestListener<SpreadsheetDocumentList> dialog = new AuthorizedProgressRequestListener<SpreadsheetDocumentList>(
+        AurhorizedProgressRequestController<SpreadsheetDocumentList> dialog = new AurhorizedProgressRequestController<SpreadsheetDocumentList>(
                 this, queue, provider) {
 
             @Override
@@ -86,8 +86,7 @@ public class MainActivity extends Activity {
             }
 
             @Override
-            protected void onError2(VolleyError error) {
-
+            protected void onVolleyError(VolleyError error) {
             }
         };
         BaseXmlRequest<SpreadsheetDocumentList> req = new BaseXmlRequest<SpreadsheetDocumentList>(Request.Method.GET,
@@ -97,7 +96,7 @@ public class MainActivity extends Activity {
                 return new SpreadsheetDocumentList(response);
             }
         };
-        dialog.addRequestQueue(req).show();
+        dialog.show().addRequestQueue(req);
     }
 
     @UiThread

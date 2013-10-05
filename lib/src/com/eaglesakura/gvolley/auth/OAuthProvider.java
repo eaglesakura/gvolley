@@ -15,7 +15,7 @@ import com.eaglesakura.lib.android.game.util.GameUtil;
 /**
  * OAuth2認証の補助を行う
  */
-public class AuthProvider {
+public class OAuthProvider {
 
     /**
      * アクセストークン
@@ -47,7 +47,7 @@ public class AuthProvider {
      * @param uniqueId ストア内で一意に識別するためのID。英数で指定
      * @param dbFile
      */
-    public AuthProvider(Context context, String uniqueId, String clientId, String clientSecret) {
+    public OAuthProvider(Context context, String uniqueId, String clientId, String clientSecret) {
         this.context = context;
         this.uniqueId = uniqueId;
         this.clientId = clientId;

@@ -24,7 +24,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.eaglesakura.gvolley.auth.GoogleOAuth2Helper.AuthToken;
-import com.eaglesakura.gvolley.request.listener.ProgressRequestListener;
+import com.eaglesakura.gvolley.request.listener.ProgressRequestController;
 import com.eaglesakura.lib.android.game.thread.UIHandler;
 import com.eaglesakura.lib.android.game.util.FileUtil;
 import com.eaglesakura.lib.android.game.util.LogUtil;
@@ -263,7 +263,7 @@ public class GoogleOAuth2Fragment extends Fragment {
             return;
         }
 
-        ProgressRequestListener<AuthToken> tokenListener = new ProgressRequestListener<AuthToken>(getActivity(),
+        ProgressRequestController<AuthToken> tokenListener = new ProgressRequestController<AuthToken>(getActivity(),
                 requests) {
             @Override
             protected void onSuccess(AuthToken response) {
