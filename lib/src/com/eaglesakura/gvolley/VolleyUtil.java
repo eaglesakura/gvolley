@@ -2,6 +2,8 @@ package com.eaglesakura.gvolley;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -23,7 +25,7 @@ public class VolleyUtil {
             if (!queries.isEmpty()) {
                 StringBuilder sb = new StringBuilder(url);
                 sb.append("?");
-    
+
                 Iterator<Entry<String, String>> iterator = queries.entrySet().iterator();
                 // URLにクエリを追加する
                 while (iterator.hasNext()) {
@@ -42,4 +44,17 @@ public class VolleyUtil {
         }
     }
 
+    /**
+     * 日付に変換する
+     * @param gdataDate
+     * @return
+     */
+    public static Date toDate(String gdataDate) {
+        try {
+            SimpleDateFormat simpleDataFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SS");
+            return simpleDataFormat.parse(gdataDate);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

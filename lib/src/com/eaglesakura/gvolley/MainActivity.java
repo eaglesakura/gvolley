@@ -14,8 +14,10 @@ import com.eaglesakura.gvolley.auth.AuthProvider;
 import com.eaglesakura.gvolley.auth.GoogleAuthActivity;
 import com.eaglesakura.gvolley.auth.Scopes;
 import com.eaglesakura.gvolley.request.ProgressRequestListener;
-import com.eaglesakura.gvolley.request.StringRequest;
+import com.eaglesakura.gvolley.request.XmlRequest;
+import com.eaglesakura.gvolley.spreadsheet.SpreadsheetDocumentList;
 import com.eaglesakura.lib.android.game.util.LogUtil;
+import com.eaglesakura.lib.io.XmlElement;
 import com.googlecode.androidannotations.annotations.EActivity;
 import com.googlecode.androidannotations.annotations.UiThread;
 
@@ -62,11 +64,16 @@ public class MainActivity extends Activity {
     @UiThread
     void loadSpreadsheets() {
         String url = "https://spreadsheets.google.com/feeds/spreadsheets/private/full";
-        ProgressRequestListener<String> dialog = new ProgressRequestListener<String>(this, queue) {
+        ProgressRequestListener<XmlElement> dialog = new ProgressRequestListener<XmlElement>(this, queue) {
 
             @Override
-            protected void onSuccess(String response) {
+            protected void onSuccess(XmlElement response) {
                 LogUtil.log("success ::  " + response);
+
+                SpreadsheetDocumentList documents = new SpreadsheetDocumentList(response);
+
+                LogUtil.log("id :: " + documents.id);
+                LogUtil.log("updated :: " + documents.updated.toString());
             }
 
             @Override
@@ -74,7 +81,7 @@ public class MainActivity extends Activity {
                 LogUtil.log(error.getMessage());
             }
         };
-        StringRequest req = new StringRequest(Request.Method.GET, url, dialog);
+        XmlRequest req = new XmlRequest(Request.Method.GET, url, dialog);
         provider.authorize(req, Scopes.SPREADSHEET);
         dialog.addRequestQueue(req).show();
     }
