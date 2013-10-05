@@ -18,8 +18,26 @@ public class SheetEntry extends BaseGDataObject {
      * シートのアクセスキーを取得する
      * @return
      */
-    public String getKey() {
-        String temp = id.substring("https://spreadsheets.google.com/feeds/worksheets/".length() + 1);
+    public String getSheetId() {
+        String temp = id.substring("https://spreadsheets.google.com/feeds/worksheets/".length());
+        temp = temp.substring(temp.indexOf('/') + 1);
+        return temp;
+    }
+
+    /**
+     * ワークシート全体のキーを取得する
+     * @return
+     */
+    public String getWorksheetId() {
+        String temp = id.substring("https://spreadsheets.google.com/feeds/worksheets/".length());
         return temp.substring(0, temp.lastIndexOf('/'));
+    }
+
+    /**
+     * 1シート詳細用のURLを取得する
+     * @return
+     */
+    public String getDetailUrl() {
+        return "https://spreadsheets.google.com/feeds/list/" + getWorksheetId() + "/" + getSheetId() + "/private/full";
     }
 }

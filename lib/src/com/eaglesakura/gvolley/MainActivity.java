@@ -13,6 +13,8 @@ import com.eaglesakura.gvolley.auth.GoogleAuthActivity;
 import com.eaglesakura.gvolley.auth.OAuthProvider;
 import com.eaglesakura.gvolley.auth.Scopes;
 import com.eaglesakura.gvolley.gdata.Link;
+import com.eaglesakura.gvolley.gdata.spreadsheet.RowEntry;
+import com.eaglesakura.gvolley.gdata.spreadsheet.Sheet;
 import com.eaglesakura.gvolley.gdata.spreadsheet.SheetEntry;
 import com.eaglesakura.gvolley.gdata.spreadsheet.SpreadsheetDocumentList;
 import com.eaglesakura.gvolley.gdata.spreadsheet.SpreadsheetProvider;
@@ -59,7 +61,7 @@ public class MainActivity extends Activity {
     void startAuth() {
         Intent intent = GoogleAuthActivity.newIntent(this, GoogleAuthActivity.class,
                 getString(R.string.oauth2_clientId), getString(R.string.oauth2_clientSecret), new String[] {
-                    Scopes.SPREADSHEET.getURL()
+                    Scopes.Spreadsheet.getURL()
                 }, provider);
         startActivity(intent);
     }
@@ -106,11 +108,11 @@ public class MainActivity extends Activity {
                 for (SheetEntry entry : response.entries) {
                     LogUtil.log(" sheet :: " + entry.getTitle());
                     for (Link link : entry.links) {
-                        LogUtil.log("  rel :: " + link.rel);
-                        LogUtil.log("  type :: " + link.type);
-                        LogUtil.log("  href :: " + link.href);
+                        //                        LogUtil.log("  href :: " + link.href);
                     }
                 }
+
+                loadSheet(response.entries.get(0));
             }
 
             @Override
@@ -119,6 +121,30 @@ public class MainActivity extends Activity {
             }
         };
         dialog.show().addRequestQueue(spreadsheet.getWorksheet(dialog, entry));
+    }
+
+    @UiThread
+    void loadSheet(SheetEntry entry) {
+        AurhorizedProgressRequestController<Sheet> dialog = new AurhorizedProgressRequestController<Sheet>(this, queue,
+                provider) {
+
+            @Override
+            protected void onSuccess(Sheet response) {
+                LogUtil.log("title :: " + response.title);
+                LogUtil.log("rows :: " + response.rows.size());
+
+                for (RowEntry row : response.rows) {
+                    LogUtil.log("content :: " + row.content);
+                    LogUtil.log("cells :: " + row.listCells().toString());
+                }
+            }
+
+            @Override
+            protected void onVolleyError(VolleyError error) {
+                toast(error.getMessage());
+            }
+        };
+        dialog.show().addRequestQueue(spreadsheet.getSheet(dialog, entry));
     }
 
     @UiThread

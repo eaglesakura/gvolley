@@ -5,7 +5,7 @@ public enum Scopes {
     /**
      * Spreadsheetアクセス
      */
-    SPREADSHEET {
+    Spreadsheet {
         @Override
         public String getURL() {
             return "https://spreadsheets.google.com/feeds/";

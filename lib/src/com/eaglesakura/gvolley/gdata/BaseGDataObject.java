@@ -2,8 +2,6 @@ package com.eaglesakura.gvolley.gdata;
 
 import java.util.Date;
 
-import com.eaglesakura.gvolley.VolleyUtil;
-import com.eaglesakura.lib.io.XmlElement;
 import com.google.api.client.util.Key;
 
 public class BaseGDataObject {
@@ -24,12 +22,6 @@ public class BaseGDataObject {
      */
     @Key
     public Date updated;
-
-    public BaseGDataObject(XmlElement element) {
-        title = element.childToString("title");
-        id = element.childToString("id");
-        updated = VolleyUtil.toDate(element.childToString("updated"));
-    }
 
     public BaseGDataObject() {
     }

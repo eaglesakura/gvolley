@@ -29,6 +29,6 @@ public class WorksheetEntry extends BaseGDataObject {
      * @return
      */
     public String getWorksheetsUrl() {
-        return Scopes.SPREADSHEET.getEndpoint() + "worksheets/" + getKey() + "/private/full";
+        return Scopes.Spreadsheet.getEndpoint() + "worksheets/" + getKey() + "/private/full";
     }
 }

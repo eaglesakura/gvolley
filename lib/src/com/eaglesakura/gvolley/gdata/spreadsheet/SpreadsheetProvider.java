@@ -14,7 +14,7 @@ public class SpreadsheetProvider {
 
     final OAuthProvider provider;
 
-    static final String ENDPOINT = Scopes.SPREADSHEET.getEndpoint();
+    static final String ENDPOINT = Scopes.Spreadsheet.getEndpoint();
 
     public SpreadsheetProvider(OAuthProvider provider) {
         this.provider = provider;
@@ -30,7 +30,7 @@ public class SpreadsheetProvider {
                 ENDPOINT + "spreadsheets/private/full", SpreadsheetDocumentList.class, listener) {
         };
 
-        provider.authorize(req, Scopes.SPREADSHEET); // 認証を行う
+        provider.authorize(req, Scopes.Spreadsheet); // 認証を行う
         return req;
     }
 
@@ -45,7 +45,22 @@ public class SpreadsheetProvider {
                 + entry.getKey() + "/private/basic", Worksheet.class, listener) {
         };
 
-        provider.authorize(req, Scopes.SPREADSHEET); // 認証を行う
+        provider.authorize(req, Scopes.Spreadsheet); // 認証を行う
+        return req;
+    }
+
+    /**
+     * シートを読み込む
+     * @param listener
+     * @param entry
+     * @return
+     */
+    public BaseRequest<Sheet> getSheet(RequestListener<Sheet> listener, SheetEntry entry) {
+        BaseRequest<Sheet> req = new SimpleXmlRequest<Sheet>(Request.Method.GET, entry.getDetailUrl(), Sheet.class,
+                listener) {
+        };
+
+        provider.authorize(req, Scopes.Spreadsheet); // 認証を行う
         return req;
     }
 }
