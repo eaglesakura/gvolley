@@ -58,7 +58,7 @@ public class JSON {
         try {
             return new ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES).readValue(json, clazz);
         } catch (Exception e) {
-            LogUtil.log(e);
+            //            LogUtil.log(e);
             return null;
         }
     }
