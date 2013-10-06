@@ -20,19 +20,19 @@ public class RowEntry extends BaseGDataObject {
     @Key("gs:col")
     public int col;
 
-    private List<Cell> cellCache = null;
+    private List<CellCache> cellCache = null;
 
     /**
      * セル分割を行う
      * @return
      */
-    public List<Cell> listCells() {
+    public List<CellCache> listCells() {
         if (cellCache == null) {
-            List<Cell> result = new ArrayList<Cell>();
+            List<CellCache> result = new ArrayList<CellCache>();
             String[] split = content.split(", ");
             for (String value : split) {
                 String[] kv = value.split(": ");
-                Cell cell = new Cell();
+                CellCache cell = new CellCache();
                 cell.columnId = kv[0];
                 cell.value = kv[1];
                 result.add(cell);
