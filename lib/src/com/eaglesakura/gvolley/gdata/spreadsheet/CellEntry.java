@@ -27,7 +27,30 @@ public class CellEntry extends BaseGDataObject {
      * 自分自身のリンクを取得する
      * 最新に値を更新する際に利用する
      */
-    public String getSelfLink() {
+    public String selfLink() {
         return getLink(links, "self");
+    }
+
+    public String cellId() {
+        return id.substring(id.lastIndexOf('/' + 1));
+    }
+
+    /**
+     * シートのアクセスキーを取得する
+     * @return
+     */
+    public String sheetId() {
+        String temp = id.substring("https://spreadsheets.google.com/feeds/cells/".length());
+        temp = temp.substring(temp.indexOf('/') + 1);
+        return temp;
+    }
+
+    /**
+     * ワークシート全体のキーを取得する
+     * @return
+     */
+    public String worksheetId() {
+        String temp = id.substring("https://spreadsheets.google.com/feeds/cells/".length());
+        return temp.substring(0, temp.lastIndexOf('/'));
     }
 }

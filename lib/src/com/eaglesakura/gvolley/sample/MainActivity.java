@@ -148,7 +148,7 @@ public class MainActivity extends Activity {
                 toast(error.getMessage());
             }
         };
-        dialog.show().addRequestQueue(spreadsheet.getWorksheet(dialog, entry));
+        dialog.show().addRequestQueue(spreadsheet.getWorksheet(dialog, entry.getKey()));
     }
 
     @UiThread
@@ -172,7 +172,7 @@ public class MainActivity extends Activity {
                 toast(error.getMessage());
             }
         };
-        dialog.show().addRequestQueue(spreadsheet.getSheetCells(dialog, entry));
+        dialog.show().addRequestQueue(spreadsheet.getSheetCells(dialog, entry.getWorksheetId(), entry.getSheetId()));
     }
 
     @UiThread

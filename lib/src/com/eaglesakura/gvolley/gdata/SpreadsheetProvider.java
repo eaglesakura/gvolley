@@ -5,11 +5,9 @@ import com.eaglesakura.gvolley.auth.OAuthProvider;
 import com.eaglesakura.gvolley.auth.Scopes;
 import com.eaglesakura.gvolley.gdata.spreadsheet.CellEntry;
 import com.eaglesakura.gvolley.gdata.spreadsheet.SheetCells;
-import com.eaglesakura.gvolley.gdata.spreadsheet.SheetEntry;
 import com.eaglesakura.gvolley.gdata.spreadsheet.SheetList;
 import com.eaglesakura.gvolley.gdata.spreadsheet.SpreadsheetDocumentList;
 import com.eaglesakura.gvolley.gdata.spreadsheet.Worksheet;
-import com.eaglesakura.gvolley.gdata.spreadsheet.WorksheetEntry;
 import com.eaglesakura.gvolley.request.BaseRequest;
 import com.eaglesakura.gvolley.request.SimpleXmlRequest;
 import com.eaglesakura.gvolley.request.listener.RequestListener;
@@ -54,9 +52,9 @@ public class SpreadsheetProvider {
      * @param entry
      * @return
      */
-    public BaseRequest<Worksheet> getWorksheet(RequestListener<Worksheet> listener, final WorksheetEntry entry) {
+    public BaseRequest<Worksheet> getWorksheet(RequestListener<Worksheet> listener, final String worksheetKey) {
         BaseRequest<Worksheet> req = new SimpleXmlRequest<Worksheet>(Request.Method.GET, ENDPOINT + "worksheets/"
-                + entry.getKey() + "/private/basic", Worksheet.class, listener) {
+                + worksheetKey + "/private/basic", Worksheet.class, listener) {
         };
 
         provider.authorize(req, Scopes.Spreadsheet); // 認証を行う
@@ -69,9 +67,9 @@ public class SpreadsheetProvider {
      * @param entry
      * @return
      */
-    public BaseRequest<SheetList> getSheetList(RequestListener<SheetList> listener, SheetEntry entry) {
-        BaseRequest<SheetList> req = new SimpleXmlRequest<SheetList>(Request.Method.GET, entry.getListUrl(),
-                SheetList.class, listener) {
+    public BaseRequest<SheetList> getSheetList(RequestListener<SheetList> listener, String worksheetKey, String sheetId) {
+        BaseRequest<SheetList> req = new SimpleXmlRequest<SheetList>(Request.Method.GET, ENDPOINT + "list/"
+                + worksheetKey + "/" + sheetId + "/private/full", SheetList.class, listener) {
         };
 
         provider.authorize(req, Scopes.Spreadsheet); // 認証を行う
@@ -84,9 +82,10 @@ public class SpreadsheetProvider {
      * @param entry
      * @return
      */
-    public BaseRequest<SheetCells> getSheetCells(RequestListener<SheetCells> listener, SheetEntry entry) {
-        BaseRequest<SheetCells> req = new SimpleXmlRequest<SheetCells>(Request.Method.GET, entry.getCellsUrl(),
-                SheetCells.class, listener) {
+    public BaseRequest<SheetCells> getSheetCells(RequestListener<SheetCells> listener, String worksheetKey,
+            String sheetId) {
+        BaseRequest<SheetCells> req = new SimpleXmlRequest<SheetCells>(Request.Method.GET, ENDPOINT + "cells/"
+                + worksheetKey + "/" + sheetId + "/private/full", SheetCells.class, listener) {
         };
 
         provider.authorize(req, Scopes.Spreadsheet); // 認証を行う
@@ -97,7 +96,7 @@ public class SpreadsheetProvider {
      * セル内容を最新に交換する
      */
     public BaseRequest<CellEntry> getCell(RequestListener<CellEntry> listener, CellEntry entry) {
-        BaseRequest<CellEntry> req = new SimpleXmlRequest<CellEntry>(Request.Method.GET, entry.getSelfLink(),
+        BaseRequest<CellEntry> req = new SimpleXmlRequest<CellEntry>(Request.Method.GET, entry.selfLink(),
                 CellEntry.class, listener) {
         };
 
