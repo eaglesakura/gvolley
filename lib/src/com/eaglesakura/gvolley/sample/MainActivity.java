@@ -10,16 +10,13 @@ import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.eaglesakura.gvolley.R;
-import com.eaglesakura.gvolley.R.layout;
-import com.eaglesakura.gvolley.R.menu;
-import com.eaglesakura.gvolley.R.string;
 import com.eaglesakura.gvolley.auth.GoogleAuthActivity;
 import com.eaglesakura.gvolley.auth.OAuthProvider;
 import com.eaglesakura.gvolley.auth.Scopes;
 import com.eaglesakura.gvolley.gdata.SpreadsheetProvider;
 import com.eaglesakura.gvolley.gdata.model.Link;
-import com.eaglesakura.gvolley.gdata.spreadsheet.RowEntry;
-import com.eaglesakura.gvolley.gdata.spreadsheet.Sheet;
+import com.eaglesakura.gvolley.gdata.spreadsheet.CellEntry;
+import com.eaglesakura.gvolley.gdata.spreadsheet.SheetCells;
 import com.eaglesakura.gvolley.gdata.spreadsheet.SheetEntry;
 import com.eaglesakura.gvolley.gdata.spreadsheet.SpreadsheetDocumentList;
 import com.eaglesakura.gvolley.gdata.spreadsheet.Worksheet;
@@ -156,17 +153,17 @@ public class MainActivity extends Activity {
 
     @UiThread
     void loadSheet(SheetEntry entry) {
-        AurhorizedProgressRequestController<Sheet> dialog = new AurhorizedProgressRequestController<Sheet>(this, queue,
-                provider) {
+        AurhorizedProgressRequestController<SheetCells> dialog = new AurhorizedProgressRequestController<SheetCells>(
+                this, queue, provider) {
 
             @Override
-            protected void onSuccess(Sheet response) {
+            protected void onSuccess(SheetCells response) {
                 LogUtil.log("title :: " + response.title);
-                LogUtil.log("rows :: " + response.rows.size());
+                LogUtil.log(String.format("c%d / c%d", response.rows, response.cols));
 
-                for (RowEntry row : response.rows) {
-                    LogUtil.log("content :: " + row.content);
-                    LogUtil.log("cells :: " + row.listCells().toString());
+                for (CellEntry entry : response.entries) {
+                    LogUtil.log("title :: " + entry.title);
+                    LogUtil.log("value :: " + entry.value.toString());
                 }
             }
 
@@ -175,7 +172,7 @@ public class MainActivity extends Activity {
                 toast(error.getMessage());
             }
         };
-        dialog.show().addRequestQueue(spreadsheet.getSheet(dialog, entry));
+        dialog.show().addRequestQueue(spreadsheet.getSheetCells(dialog, entry));
     }
 
     @UiThread

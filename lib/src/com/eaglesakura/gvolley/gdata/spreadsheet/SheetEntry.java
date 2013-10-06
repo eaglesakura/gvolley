@@ -37,7 +37,16 @@ public class SheetEntry extends BaseGDataObject {
      * 1シート詳細用のURLを取得する
      * @return
      */
-    public String getDetailUrl() {
+    public String getListUrl() {
         return "https://spreadsheets.google.com/feeds/list/" + getWorksheetId() + "/" + getSheetId() + "/private/full";
     }
+
+    /**
+     * セル一覧を並べるURLを取得する
+     * @return
+     */
+    public String getCellsUrl() {
+        return "https://spreadsheets.google.com/feeds/cells/" + getWorksheetId() + "/" + getSheetId() + "/private/full";
+    }
+
 }

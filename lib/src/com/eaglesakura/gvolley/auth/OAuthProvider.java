@@ -83,7 +83,7 @@ public class OAuthProvider {
 
         this.dbFile = new File(context.getFilesDir(), "gvolley-auth.db");
         dbFile.getParentFile().mkdirs();
-        loadFromDB();
+        load();
     }
 
     private String getTokenKey() {
@@ -101,7 +101,7 @@ public class OAuthProvider {
     /**
      * DBからキャッシュ情報を読み出す
      */
-    void loadFromDB() {
+    public void load() {
         final TextKeyValueStore db = new TextKeyValueStore(dbFile, context, TABLE_NAME, DBType.Read, DB_VERSION);
         {
             token = db.getOrNull(getTokenKey());
@@ -142,7 +142,7 @@ public class OAuthProvider {
      * @param account
      * @param token
      */
-    public void onAuthCompletedFromPlayservice(Context context, String account, String token) {
+    public void onAuthCompletedFromPlayservice(String account, String token) {
         TextKeyValueStore db = new TextKeyValueStore(dbFile, context, TABLE_NAME, DBType.Write, DB_VERSION);
         try {
             db.beginTransaction();
@@ -238,7 +238,7 @@ public class OAuthProvider {
         }
 
         final String token = GoogleAuthUtil.getToken(context, account, SCOPE);
-        onAuthCompletedFromPlayservice(context, account, token);
+        onAuthCompletedFromPlayservice(account, token);
     }
 
     /**

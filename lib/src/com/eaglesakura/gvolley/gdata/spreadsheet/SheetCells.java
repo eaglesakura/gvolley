@@ -7,7 +7,7 @@ import com.eaglesakura.gvolley.gdata.model.BaseGDataObject;
 import com.eaglesakura.gvolley.gdata.model.Link;
 import com.google.api.client.util.Key;
 
-public class Sheet extends BaseGDataObject {
+public class SheetCells extends BaseGDataObject {
 
     /**
      * link
@@ -27,6 +27,15 @@ public class Sheet extends BaseGDataObject {
     @Key("openSearch:startIndex")
     public int startIndex;
 
+    @Key("gs:rowCount")
+    public int rows;
+
+    @Key("gs:colCount")
+    public int cols;
+
+    /**
+     * 取得したセル一覧
+     */
     @Key("entry")
-    public List<RowEntry> rows;
+    public List<CellEntry> entries;
 }

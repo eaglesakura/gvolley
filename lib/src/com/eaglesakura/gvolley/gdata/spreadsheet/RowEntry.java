@@ -14,6 +14,12 @@ public class RowEntry extends BaseGDataObject {
     @Key("link")
     public List<Link> links;
 
+    @Key("gs:row")
+    public int row;
+
+    @Key("gs:col")
+    public int col;
+
     private List<Cell> cellCache = null;
 
     /**

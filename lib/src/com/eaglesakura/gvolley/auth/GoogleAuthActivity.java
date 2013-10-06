@@ -77,6 +77,7 @@ public class GoogleAuthActivity extends Activity implements GoogleOAuth2Fragment
 
     @Override
     public void onAuthCanceled(GoogleOAuth2Fragment fragment) {
+        setResult(RESULT_CANCELED);
         finish();
     }
 
@@ -88,6 +89,7 @@ public class GoogleAuthActivity extends Activity implements GoogleOAuth2Fragment
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                setResult(RESULT_CANCELED);
                 finish();
             }
         });
@@ -99,6 +101,7 @@ public class GoogleAuthActivity extends Activity implements GoogleOAuth2Fragment
         //        LogUtil.log("onMakeTokenComplete :: " + token.access_token + "/" + token.refresh_token);
         provider.onAuthCompleted(token);
         Toast.makeText(this, R.string.auth_complete, Toast.LENGTH_SHORT).show();
+        setResult(RESULT_OK);
         finish();
     }
 
