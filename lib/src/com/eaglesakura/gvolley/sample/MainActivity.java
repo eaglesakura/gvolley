@@ -21,7 +21,7 @@ import com.eaglesakura.gvolley.gdata.spreadsheet.SheetEntry;
 import com.eaglesakura.gvolley.gdata.spreadsheet.SpreadsheetDocumentList;
 import com.eaglesakura.gvolley.gdata.spreadsheet.Worksheet;
 import com.eaglesakura.gvolley.gdata.spreadsheet.WorksheetEntry;
-import com.eaglesakura.gvolley.request.listener.AurhorizedProgressRequestController;
+import com.eaglesakura.gvolley.request.listener.AuthorizedProgressRequestController;
 import com.eaglesakura.lib.android.game.util.LogUtil;
 import com.googlecode.androidannotations.annotations.Background;
 import com.googlecode.androidannotations.annotations.EActivity;
@@ -99,7 +99,7 @@ public class MainActivity extends Activity {
      */
     @UiThread
     void loadSpreadsheets() {
-        AurhorizedProgressRequestController<SpreadsheetDocumentList> dialog = new AurhorizedProgressRequestController<SpreadsheetDocumentList>(
+        AuthorizedProgressRequestController<SpreadsheetDocumentList> dialog = new AuthorizedProgressRequestController<SpreadsheetDocumentList>(
                 this, queue, provider) {
 
             @Override
@@ -126,7 +126,7 @@ public class MainActivity extends Activity {
 
     @UiThread
     void loadWorksheet(WorksheetEntry entry) {
-        AurhorizedProgressRequestController<Worksheet> dialog = new AurhorizedProgressRequestController<Worksheet>(
+        AuthorizedProgressRequestController<Worksheet> dialog = new AuthorizedProgressRequestController<Worksheet>(
                 this, queue, provider) {
             @Override
             protected void onSuccess(Worksheet response) {
@@ -153,7 +153,7 @@ public class MainActivity extends Activity {
 
     @UiThread
     void loadSheet(SheetEntry entry) {
-        AurhorizedProgressRequestController<SheetCells> dialog = new AurhorizedProgressRequestController<SheetCells>(
+        AuthorizedProgressRequestController<SheetCells> dialog = new AuthorizedProgressRequestController<SheetCells>(
                 this, queue, provider) {
 
             @Override
