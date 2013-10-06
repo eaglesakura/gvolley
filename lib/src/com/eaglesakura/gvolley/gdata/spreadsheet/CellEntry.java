@@ -22,4 +22,12 @@ public class CellEntry extends BaseGDataObject {
 
     @Key("gs:cell")
     public CellData value;
+
+    /**
+     * 自分自身のリンクを取得する
+     * 最新に値を更新する際に利用する
+     */
+    public String getSelfLink() {
+        return getLink(links, "self");
+    }
 }

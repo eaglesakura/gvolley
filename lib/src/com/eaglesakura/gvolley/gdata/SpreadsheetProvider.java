@@ -3,6 +3,7 @@ package com.eaglesakura.gvolley.gdata;
 import com.android.volley.Request;
 import com.eaglesakura.gvolley.auth.OAuthProvider;
 import com.eaglesakura.gvolley.auth.Scopes;
+import com.eaglesakura.gvolley.gdata.spreadsheet.CellEntry;
 import com.eaglesakura.gvolley.gdata.spreadsheet.SheetCells;
 import com.eaglesakura.gvolley.gdata.spreadsheet.SheetEntry;
 import com.eaglesakura.gvolley.gdata.spreadsheet.SheetList;
@@ -24,6 +25,13 @@ public class SpreadsheetProvider {
 
     public SpreadsheetProvider(OAuthProvider provider) {
         this.provider = provider;
+    }
+
+    /**
+     * トークンをDBからロードし直す
+     */
+    public void loadToken() {
+        provider.load();
     }
 
     /**
@@ -79,6 +87,18 @@ public class SpreadsheetProvider {
     public BaseRequest<SheetCells> getSheetCells(RequestListener<SheetCells> listener, SheetEntry entry) {
         BaseRequest<SheetCells> req = new SimpleXmlRequest<SheetCells>(Request.Method.GET, entry.getCellsUrl(),
                 SheetCells.class, listener) {
+        };
+
+        provider.authorize(req, Scopes.Spreadsheet); // 認証を行う
+        return req;
+    }
+
+    /**
+     * セル内容を最新に交換する
+     */
+    public BaseRequest<CellEntry> getCell(RequestListener<CellEntry> listener, CellEntry entry) {
+        BaseRequest<CellEntry> req = new SimpleXmlRequest<CellEntry>(Request.Method.GET, entry.getSelfLink(),
+                CellEntry.class, listener) {
         };
 
         provider.authorize(req, Scopes.Spreadsheet); // 認証を行う
