@@ -4,28 +4,35 @@
 
 GVolleyはGoogleが公開している各種APIをVolley経由で利用しやすくするためのラッパーライブラリです。
 
+個人的な用途で作成しているため、ドキュメント等は整備されていません。
+
+機能は必要最低限のみを整備しています。
+
 ## GVolleyの機能
 
 1. OAuth2認証用Activity
 1. OAuth2トークン保持
 	* トークンの暗号化は行いません
 1. OAuth2トークンリフレッシュ
+	* 汎用Requestを利用した場合、自動的にトークンリフレッシュを行います
 1. APIを呼び出すための汎用的な各種Volleyリクエスト
 	* XMLリクエスト
 	* JSONリクエスト
 
 ## 依存関係
 
-* GVolleyは下記のライブラリを利用しています
+* GVolleyは下記のjarライブラリを利用しています
 	1. android-query-full.0.25.10.jar
 	1. androidannotations-2.7.1.jar
 	1. androidannotations-api-2.7.1.jar
 	1. google-http-client-1.17.0-rc.jar
 	1. google-http-client-xml-1.17.0-rc.jar
 	1. eglibrary-android-api8.jar
-		* リポジトリに追加済み
 	1. jackson-core-2.2.3.jar
 	1. jackson-databind-2.2.3.jar
+* GVolleyは下記のAndroidライブラリプロジェクトをリンクしています
+	1. volley
+	1. google-play-services_lib
 
 
 =============

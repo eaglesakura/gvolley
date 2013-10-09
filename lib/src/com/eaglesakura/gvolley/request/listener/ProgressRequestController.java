@@ -8,6 +8,7 @@ import com.android.volley.RequestQueue;
 import com.eaglesakura.gvolley.R;
 import com.eaglesakura.gvolley.request.BaseRequest;
 import com.eaglesakura.lib.android.game.thread.UIHandler;
+import com.eaglesakura.lib.android.game.util.LogUtil;
 
 /**
  * リクエスト通信中にダイアログ表示を行う汎用リスナー
@@ -77,7 +78,11 @@ public abstract class ProgressRequestController<T> extends RequestListener<T> im
         UIHandler.postUI(new Runnable() {
             @Override
             public void run() {
-                dialog.show();
+                try {
+                    dialog.show();
+                } catch (Exception e) {
+                    LogUtil.log(e);
+                }
             }
         });
         return this;
