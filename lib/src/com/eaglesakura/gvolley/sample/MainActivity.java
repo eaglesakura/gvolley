@@ -13,7 +13,7 @@ import com.eaglesakura.gvolley.R;
 import com.eaglesakura.gvolley.auth.GoogleAuthActivity;
 import com.eaglesakura.gvolley.auth.OAuthProvider;
 import com.eaglesakura.gvolley.auth.Scopes;
-import com.eaglesakura.gvolley.gdata.SpreadsheetProvider;
+import com.eaglesakura.gvolley.gdata.SpreadsheetHelper;
 import com.eaglesakura.gvolley.gdata.model.Link;
 import com.eaglesakura.gvolley.gdata.spreadsheet.CellEntry;
 import com.eaglesakura.gvolley.gdata.spreadsheet.SheetCells;
@@ -35,7 +35,7 @@ public class MainActivity extends Activity {
 
     RequestQueue queue = null;
 
-    SpreadsheetProvider spreadsheet;
+    SpreadsheetHelper spreadsheet;
 
     static final int REQUEST_ACCOUNT_AUTH = 0x3103;
 
@@ -49,7 +49,7 @@ public class MainActivity extends Activity {
 
         if (provider.isAuthorized()) {
             toast("authorized");
-            spreadsheet = new SpreadsheetProvider(provider);
+            spreadsheet = new SpreadsheetHelper(provider);
             loadSpreadsheets();
         } else {
             startAuth();

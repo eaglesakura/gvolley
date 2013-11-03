@@ -1,7 +1,7 @@
 package com.eaglesakura.gvolley.json;
 
 /**
- * for json
+ * for json/XML
  */
 public abstract class Model {
 

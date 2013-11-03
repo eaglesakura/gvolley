@@ -1,5 +1,8 @@
 package com.eaglesakura.gvolley;
 
+/**
+ * GVolleyで送信するコンテンツの種類を設定する
+ */
 public enum ContentType {
     /**
      * JSON形式にエンコードされたModel

@@ -152,15 +152,15 @@ public class GoogleOAuth2Fragment extends Fragment {
                 return super.shouldOverrideUrlLoading(view, startUrl);
             }
         });
-        loadAuthURL();
+        cleanAuthCache();
     }
 
     /**
      * 認証用URLを取り出す
      */
     @Background
-    void loadAuthURL() {
-        final File cacheDirectory = new File(getActivity().getFilesDir(), "__es_auth_cache__");
+    void cleanAuthCache() {
+        final File cacheDirectory = new File(getActivity().getCacheDir(), "com.eaglesakura.gvolley.auth");
 
         FileUtil.mkdir(cacheDirectory);
         FileUtil.cleanDirectory(cacheDirectory);

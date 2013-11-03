@@ -28,42 +28,42 @@ public class OAuthProvider {
     /**
      * アクセストークン
      */
-    String token;
+    private String token;
 
     /**
      * リフレッシュトークン
      */
-    String refresh;
+    private String refresh;
 
     /**
      * アクセス対象のアカウント
      */
-    String account;
+    private String account;
 
     /**
      * データベースの実ファイル
      */
-    final File dbFile;
+    private final File dbFile;
 
     /**
      * テーブルの管理ID
      */
-    final String uniqueId;
+    private final String uniqueId;
 
     /**
      * 
      */
-    final Context context;
+    private final Context context;
 
     /**
      * OAuth2 クライアントID
      */
-    final String clientId;
+    private final String clientId;
 
     /**
      * OAuth2 クライアントシークレット
      */
-    final String clientSecret;
+    private final String clientSecret;
 
     private static final String TABLE_NAME = "tokens";
 
@@ -81,7 +81,7 @@ public class OAuthProvider {
         this.clientId = clientId;
         this.clientSecret = clientSecret;
 
-        this.dbFile = new File(context.getFilesDir(), "gvolley-auth.db");
+        this.dbFile = new File(context.getFilesDir(), "com.eaglesakura.gvolley-auth.db");
         dbFile.getParentFile().mkdirs();
         load();
     }

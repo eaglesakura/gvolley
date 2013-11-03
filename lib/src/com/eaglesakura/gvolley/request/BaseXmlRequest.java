@@ -9,9 +9,9 @@ import com.eaglesakura.gvolley.request.listener.RequestListener;
 import com.eaglesakura.lib.android.game.util.LogUtil;
 import com.eaglesakura.lib.io.XmlElement;
 
-public abstract class XmlRequest<T> extends BaseRequest<T> {
+public abstract class BaseXmlRequest<T> extends BaseRequest<T> {
 
-    public XmlRequest(int method, String url, RequestListener<T> listener) {
+    public BaseXmlRequest(int method, String url, RequestListener<T> listener) {
         super(method, url, listener);
     }
 

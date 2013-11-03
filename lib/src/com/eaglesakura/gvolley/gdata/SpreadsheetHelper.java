@@ -15,13 +15,13 @@ import com.eaglesakura.gvolley.request.listener.RequestListener;
 /**
  * Spreadsheetアクセス用リクエストを生成する
  */
-public class SpreadsheetProvider {
+public class SpreadsheetHelper {
 
     final OAuthProvider provider;
 
     static final String ENDPOINT = Scopes.Spreadsheet.getEndpoint();
 
-    public SpreadsheetProvider(OAuthProvider provider) {
+    public SpreadsheetHelper(OAuthProvider provider) {
         this.provider = provider;
     }
 
